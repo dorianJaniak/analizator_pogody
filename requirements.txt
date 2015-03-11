@@ -1,1 +1,4 @@
+#instalować za pomocą
+# pip install -r requirements.txt --allow-external mysql-connector-python
 django==1.7
+mysql-connector-python
