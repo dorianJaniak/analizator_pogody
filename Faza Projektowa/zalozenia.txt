@@ -1,0 +1,56 @@
+Wielkości fizyczne do analizy pogody:
+
+* temperatura oC
+* ciśnienie [hPa]
+* temperatura punktu rosy (?) oC
+* prędość [km/h] i kierunek wiatru [enum - 8 kierunków]
+* wilgotność [%]
+* opady [mm/m^2]
+* zachmurzenie [%]
+
+Rodzaje użytkowników:
+* admin
+* reporter pogody
+* zwykły użytkownik (??????)
+
+
+Funkcjonalność analizatora:
+* średnie, mediany itp. różnych wielkości w podanym okresie czasu (wybranym przez użytkownika)
+* filtracja  przy wyświetlaniu danych z tabeli dane_meteorologiczne 
+* generowanie wykresów w czasie, histogramy i mapy
+* liczenie korelacji (?) 
+
+
+Tabele:
+* dane_meteorologiczne
+	** id_stacji: int foreign  
+	** czas_pomiaru: timestamp 
+	** wielkości fizyczne danego pomiaru e.g. temp., ciśnienie
+* stacje
+	** id_stacji: int 
+	** dlugosc_geograficzna_stopnie: int
+	** dlugosc_geograficzna_minuty: int
+	** szerokosc_geograficzna_stopnie: int
+	** szerokosc_geograficzna_minuty: int
+	** nazwa_stacji: string
+	** miejscowosc: string
+* miasta (?)
+	** id: int
+	** nazwa: string
+	** dlugosc_geograficzna_stopnie: int
+	** dlugosc_geograficzna_minuty: int
+	** szerokosc_geograficzna_stopnie: int
+	** szerokosc_geograficzna_minuty: int
+
+
+
+
+
+Przewidywanie pogody:
+
+* ekstrapolacja danej wielkości na podstawie pory dnia (dzień, noc, poranek) (?)
+* oparta na prawach/obserwacjach (?)
+* szeregi czasowe (!) - metoda Jenkinsa-Box'a (!)
+
+Pytania:
+* Czy trzeba mieć konta użytkowników - system logowania?
