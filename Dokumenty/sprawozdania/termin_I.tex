@@ -1,35 +1,61 @@
-\documentclass[a4paper]{article}
+\documentclass[11pt, a4paper, oneside]{mwart}
 
-\usepackage[utf8]{inputenc}
-\usepackage[polish]{babel}
-\usepackage{polski}
-\usepackage[margin=0.9in]{geometry}
-\usepackage{graphicx}
+\def \MYHEADER {Projekt Bazy Danych}
+\def \MYTITLE {Analizator danych pogodowych}
+\def \MYPDFTITLE {term_1}
+\def \MYPDFDATE {\today}
+\def \MYAUTHOR {\emph{Autorzy:}\\Aleksandra~\textsc{Grzelak}\\Dorian~\textsc{Janiak}\\Marcin~\textsc{Ochman}}
+\def \MYPDFAUTHOR {air}
+\def \MYLECTURER {\emph{Prowadzący:} \\dr~in\.z.~G.~\textsc{Myzk}}
+\def \MYLSTSETLANGUAGE {matlab}
+\def \MYLSTSETFRAME {lines}
+\def \MYLSTSETKEYWORDS {} 
 
-\author{Aleksandra Grzelak \\* Dorian Janiak \\* Marcin Ochman}
-\title{Analizator danych pogodowych}
-
+\input{_cfg.tex}
 \begin{document}
-\maketitle
+\input{_str_tytulowa.tex}
 
-\section{Opis}
+\newpage
+\thispagestyle{empty}
 
-\section{Diagramy}
+\tableofcontents
+\newpage
 
-Na poniższych rysunkach zostały przedstawione diagramy \textit{ERD} oraz \textit{UML} prezentujące budowę naszej aplikacji.
 
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.6]{./diagramEER}
-\caption{Tabele oraz powiązania pomiędzy nimi w naszej aplikacji}
-\label{fig:diagram_eer}
+\section{Cel projektu}
+
+Zadanie polega na stworzeniu aplikacji umożlwiającej analizę i prognozę pogody w oparciu o historię pomiarów. Do tego celu należy zaimplementować: 
+\begin{itemize}
+  \item  bazę danych, przechowującą pomiary,
+  \item algorytm prognozy,
+  \item aplikację webową dostarczającą interfejs użytkownika.
+\end{itemize}
+
+%\section{Założenia projektowe}
+
+\section{Baza danych}
+Bazę danych zaprojektowano w języku \textsc{mySQL}.
+
+Tabele odpowiadają stacjom pomiarowym, rodzajom pomiaru, danym pomiarowym. Na rysunkach \ref{fig:diagram_eer}--\ref{fig:diagram_uml} zostały przedstawione diagramy \textsc{erd} oraz \textsc{uml} prezentujące budowę aplikacji.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{./diagramEER}
+  \caption{Podgląd tabel oraz powiązania pomiędzy nimi w aplikacji.}
+  \label{fig:diagram_eer}
 \end{figure}
 
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.7]{./uml}
-\caption{Graficzne przedstawienie klas używanych w aplikacji}
-\label{fig:diagram_eer}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{./uml}
+  \caption{Graficzne przedstawienie klas używanych w aplikacji.}
+  \label{fig:diagram_uml}
 \end{figure}
 
+\section{Algorytm}
+
+Algorytm prognozy bedzie wykorzystywał różne funkcje: średnią ruchomą, wariancję, korelacje i autokorelacje, różniczkowanie.
+
+
+\section{Interfejs użytkownika}
 \end{document}
