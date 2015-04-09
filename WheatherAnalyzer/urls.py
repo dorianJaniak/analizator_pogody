@@ -1,11 +1,14 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from Analyzer.views import IndexView, StationsView, \
+    StationsDetailView, ForecastView
 
-urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'WheatherAnalyzer.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
+# urlpatterns=patterns('',url(r'^$',views.index,name='index'))
+urlpatterns = [
+    url(r'^$', IndexView.as_view(), name="index"),
+    url(r'^station/$', StationsView.as_view(), name="stations"),
+    url(r'^station/(?P<station_id>[0-9]+)$', StationsDetailView.as_view(), name="station_detail"),
+    url(r'^forecast/$', ForecastView.as_view(), name="forecast"),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^analyzer',include('Analyzer.urls'))
-)
+]
