@@ -63,35 +63,27 @@ print("PRZEKONWERTOWANE PARAMETRY P i Q:",p,q)
 
 #Iteracyjna wersja algorytmu - ostatecznie predykcja jest dosc niedokladna
 #p = 1
-#d = 0
+d = 0
 #q = 0
 #p_best = 1
-#d_best = 0
+d_best = 0
 #q_best = 0
-#AIC_best = 999999
-#while p < 4:
-#	while q<=p:
-#		while d <= p:
-#			print("TEST ARIMA: ", p,d,q)
-#			try:
-#				arima_mod = sm.tsa.ARIMA(dta, (p,d,q)).fit()
-#				if AIC_best > arima_mod.aic:
-#					p_best = p
-#					d_best = d
-#					q_best = q
-#					AIC_best = arima_mod.aic
-#			except:
-#				print("NIESTACJONARNY")
-#			finally:
-#				d = d+1
-#		q=q+1
-#		d=0
-#	p=p+1
-#	q=0
-#print("ARIMA dopasowanie: ",p_best,d_best,q_best)
-#print("AIC: ", AIC_best)
+AIC_best = 999999
+while d <= p:
+	print("TEST ARIMA: ", p,d,q)
+	try:
+		arima_mod = sm.tsa.ARIMA(dta, (p,d,q)).fit()
+		if AIC_best > arima_mod.aic:
+			d_best = d
+			AIC_best = arima_mod.aic
+	except:
+		print("NIESTACJONARNY")
+	finally:
+		d = d+1
+print("ARIMA dopasowanie: ",p,d_best,q)
+print("AIC: ", AIC_best)
 
-arima_mod = sm.tsa.ARIMA(dta, (p,0,q)).fit()
+arima_mod = sm.tsa.ARIMA(dta, (p,d_best,q)).fit()
 
 # na stronie badali jeszcze reszty autokorelacji, czy cos takiego
 # prognoza jeszcze nie rozgryziona
