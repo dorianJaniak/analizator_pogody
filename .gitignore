@@ -1,7 +1,11 @@
 *.pyc
-*__pycache__/*
+*/__pycache__/*
 *.aux
 *.log
 *.swp
 *.out
 *.toc
+.idea/*
+*/migrations/*
+*.*~
+venv/*

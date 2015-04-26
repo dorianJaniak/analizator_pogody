@@ -1,0 +1,33 @@
+{% extends "analyzer/base.html"%}
+{% block title %} - stacje pogodowe {% endblock %}
+{% block content %}
+
+<div id="Index">
+<h1>Stacje pogodowe</h1>
+
+ {% if station_list %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th class="col-lg-1">Miasto</th>
+            <!--<th class="col-lg-1">Ostatni pomiar</th>-->
+        </tr>
+        </thead>
+        <tbody>
+        {% for station in station_list %}
+      <tr>
+          <td><a href="{% url 'station_detail' station.id %}"> {{ station.nazwa }}</a></td>
+          </tr>
+        {% endfor %}
+           </tbody>
+        </table>
+
+    {% else %}
+    <p> Brak daynch do wyświetlenia.</p>
+    {% endif %}
+
+
+
+</div>
+
+    {% endblock %}

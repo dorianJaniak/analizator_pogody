@@ -1,0 +1,55 @@
+{% extends "analyzer/base.html"%}
+{% block title %} - Indeks {% endblock %}
+{% block content %}
+
+<div id="Indeks">
+<h1> Indeks </h1>
+    <p>
+            Witaj na stronie głównej projektu z Baz Danych. Autorami tej strony są:
+            <ul class="paragraphList">
+            	<li> Aleksandra Grzelak </li>
+            	<li> Dorian Janiak </li>
+            	<li> Marcin Ochman </li>            	
+            </ul>
+    </p>
+
+<p> Klikając w poniższe odnośniki wybierz, co chciałbyś zrobić?</p>
+
+{% load staticfiles %}
+<div class="indexMenu">
+    	<div align="center" class="float-left">
+    	<a href="{%url "stations"%}">
+    		<div>
+    			<img src="{% static "img/stations_index.jpg" %}"/> 
+    		</div>
+    		<div>
+    			Przeglądaj listę stacji pogodowych
+	    	</div>
+	    	</a>
+   		 </div>
+   		     	<div align="center" class="float-left">
+    	<a href="{%url "forecast"%}">
+    		<div>
+    			<img src="{% static "img/wheather_forecast_index.jpg" %}"/> 
+    		</div>
+    		<div>
+    			Pokaż prognozę pogody
+	    	</div>
+	    	</a>
+   		 </div>
+   		     	<div align="center" class="float-left">
+    	<a href="{%url "stations"%}">
+    		<div>
+    			<img src="{% static "img/stacje_pogodowe_index.jpg" %}"/> 
+    		</div>
+    		<div>
+    			Przeglądaj listę stacji pogodowych
+	    	</div>
+	    	</a>
+   		 </div>
+    
+</div>
+
+</div>
+
+    {% endblock %}
