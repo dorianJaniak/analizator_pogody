@@ -20,10 +20,31 @@ li, ul {
   list-style-type: none;
 }
 
+ul.paragraphList li{
+	list-style-type: circle;
+}
+
 a {
   color: #2f849e;
 }
 
 .asteriskField {
     display: none;
+}
+
+.float-left {
+	float:left;
+	width:33%;
+}
+
+/* główne obrazy w index */
+
+div.indexMenu img{
+	opacity:0.5; 
+	transition: opacity 1s;
+}
+
+div.indexMenu img:hover{
+	opacity: 1;
+	transition: opacity 1s;
 }
