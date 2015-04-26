@@ -45,6 +45,10 @@ Tabele odpowiadają stacjom pomiarowym, rodzajom pomiaru, danym pomiarowym. Na r
   \label{fig:diagram_eer}
 \end{figure}
 
+\section{Algorytm oraz klasy }
+
+Algorytm prognozy będzie wykorzystywał różne funkcje: średnią ruchomą, wariancję, korelacje i autokorelacje, różniczkowanie.
+
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=\textwidth]{./uml}
@@ -52,8 +56,22 @@ Tabele odpowiadają stacjom pomiarowym, rodzajom pomiaru, danym pomiarowym. Na r
   \label{fig:diagram_uml}
 \end{figure}
 
-\section{Algorytm}
 
-Algorytm prognozy bedzie wykorzystywał różne funkcje: średnią ruchomą, wariancję, korelacje i autokorelacje, różniczkowanie.
+\section{Opis poszczególych tabel}
+Główną tabelą jest \textit{Analyzer\_danepomiarowe}. Służy ona do przechowywania wszelkich pomiarów, z których będzie korzystać nasza aplikacja. Znajdują się w niej następujące pola:
+\begin{itemize}
+	\item \textit{id} - identyfikator pomiaru, klucz główny tabeli
+	\item \textit{wartość} - wartość pomiaru
+	\item \textit{rodzaj\_pomiaru\_id} - identyfikator rodzaju pomiaru, klucz obcy odwołujący się do tabeli \textit{Analyzer\_rodzajpomiaru}
+	\item \textit{stacja\_id} - identyfikator stacji badawczej, klucz obcy odwołujący się do tabeli \textit{Analyzer\_stacja}
+	\item \textit{data} - data przeprowadzenia pomiaru
+\end{itemize}
+
+	Baza danych będzie również zawierać trzy inne tabele:
+\begin{itemize}
+	\item \textit{Analyzer\_jednostka} - przechowuje informacje o jednostce, zawiera identyfikator jednostki oraz jej nazwę
+	\item \textit{Analyzer\_rodzajpomiaru} - przechowuje informacje o możliwych rodzajach pomiaru, zawiera identyfikator rodzaju pomiaru, nazwę pomiaru oraz jednostkę - klucz obcy odwołujący się do tabeli \textit{Analyzer\_jednostka}
+	\item{Analyzer\_stacja} - przechowuje informacje o stacjach tj. identyfikator stacji o nazwę tej stacji
+\end{itemize}
 
 \end{document}

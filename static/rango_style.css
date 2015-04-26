@@ -34,7 +34,9 @@ a {
 
 .float-left {
 	float:left;
-	width:33%;
+	width:31.3%;
+	font-size:0%;
+	color:rgb(255,0,255);
 }
 
 /* główne obrazy w index */
@@ -53,4 +55,8 @@ div.indexMenu img{
 div.indexMenu img:hover{
 	opacity: 1;
 	transition: opacity 1s;
+}
+
+a:hover{
+	text-decoration: none;
 }

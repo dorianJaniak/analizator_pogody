@@ -35,7 +35,5 @@ class StationsDetailView(TemplateView):
 class ForecastView(TemplateView):
     template_name = "analyzer/forecast.html"
 
-# def index(request):
-#     context_dict={'boldmessage':" świecie"}
-#     return render(request, 'analyzer/analyzer_main.html', context_dict)
-#
+class AuthorsView(TemplateView):
+    template_name='analyzer/authors.html'
