@@ -29,6 +29,7 @@ class StationsDetailView(TemplateView):
         station_id = kwargs['station_id']
         context = super(StationsDetailView, self).get_context_data(**kwargs)
         context['station'] = get_object_or_404(Stacja, id=station_id)
+        print(context['station']);
         context['dane_pom'] = DanePomiarowe.objects.filter(stacja__id=station_id)
         return context
 

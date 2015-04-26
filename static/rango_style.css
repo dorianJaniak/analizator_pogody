@@ -34,12 +34,17 @@ a {
 
 .float-left {
 	float:left;
-	width:31.3%;
+	width:30%;
 	font-size:0%;
 	color:rgb(255,0,255);
+	display:block;
 }
 
 /* główne obrazy w index */
+
+div.indexMenu {
+	margin: 5% 0%
+}
 
 div.indexMenu div {
 	margin: 10px;
@@ -59,4 +64,9 @@ div.indexMenu img:hover{
 
 a:hover{
 	text-decoration: none;
+}
+
+/* efekt fade */
+body{
+	opacity:0;
 }
