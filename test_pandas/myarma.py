@@ -29,7 +29,7 @@ arima_mod20 = sm.tsa.ARIMA(dta, (2,0,0)).fit()
 arima_mod30 = sm.tsa.ARIMA(dta, (3,0,0)).fit()
 
 #DJ: ALGORYTM:
-#DJ: Jeden z pomyslow (ARMA): P - ile pierwszych peakow na ACF znajduje się poza przedzialem ufnosci
+#DJ: Jeden z pomyslow (ARMA): P - ile pierwszych peakow na ACF znajduje sie poza przedzialem ufnosci
 #		    D - ile pierwszych peakow na PACF znajduje sie poza przedzialem ufnosci
 #	W takiej sytuacji mamy w naszym przykladzie model ARMA (28,2) lub odpowiednio skalujac (14,1) - jakis gosciu tak robil i byl zadowolony z siebie - ale oczywiscie wtedy nie ma parametru d.
 #
@@ -52,8 +52,9 @@ print(arima_mod30.aic, arima_mod30.bic, arima_mod30.hqic)
 # prognoza jeszcze nie rozgryziona
 # DJ: reszta rowniez powinna byc stacjonarna - jesli dobrze zrozumialem
 fig, ax = plt.subplots(figsize=(12, 8))
-ax = dta.ix[200:].plot(ax=ax)
-preds = arima_mod30.predict(220,340)
+#ax = dta.ix[200:].plot(ax=ax)
+preds = arima_mod30.predict(330,390)
 #fig = arima_mod30.plot_predict(220, 340, dynamic=True, plot_insample=False)
+ax.plot(preds)
 print(preds)
 plt.show()
