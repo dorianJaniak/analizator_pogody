@@ -4,21 +4,21 @@ from datetime import datetime
 # Create your models here.
 
 class Stacja(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     nazwa = models.CharField(max_length=30)
 
     def __str__(self):
         return self.nazwa
 
 class Jednostka(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     nazwa = models.CharField(max_length=20)
 
     def __str__(self):
         return self.nazwa
 
 class RodzajPomiaru(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     nazwa = models.CharField(max_length=20)
     jednostka = models.ForeignKey(Jednostka,null=True)
 
@@ -27,7 +27,7 @@ class RodzajPomiaru(models.Model):
 
 
 class DanePomiarowe(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     wartosc = models.IntegerField()
     rodzaj_pomiaru = models.ForeignKey(RodzajPomiaru, null=True)
     stacja = models.ForeignKey(Stacja, null=True)

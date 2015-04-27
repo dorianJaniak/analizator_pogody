@@ -32,9 +32,9 @@ a {
     display: none;
 }
 
-.float-left {
+.indexMenuItem {
 	float:left;
-	width:30%;
+	width:31%;
 	font-size:0%;
 	color:rgb(255,0,255);
 	display:block;
@@ -69,4 +69,14 @@ a:hover{
 /* efekt fade */
 body{
 	opacity:0;
+}
+
+/* authors */
+
+.authorsItem
+{
+	float:left;
+	width:31%;
+	display:block;
+	text-align:center;
 }

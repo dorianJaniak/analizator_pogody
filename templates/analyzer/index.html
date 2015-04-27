@@ -4,24 +4,24 @@
 
 <div id="Indeks">
 <h1> Indeks </h1>
-    <p>Witaj na stronie głównej projektu z Baz Danych. 	
+<!--     <p>Witaj na stronie głównej projektu z Baz Danych. 	
     </p>
 
 <p> Klikając w poniższe odnośniki wybierz, co chciałbyś zrobić?</p>
-
+ -->
 {% load staticfiles %}
 <div class="indexMenu">	
-    	<div align="center" class="float-left">
+    	<div align="center" class="indexMenuItem">
     	<a href="{%url "stations"%}">
     		<div>
     			<img src="{% static "img/stations_index.jpg" %}"/> 
     		</div>
     		<div class="textMenuItem">
-    			Stacje pogodowe
+    			 Stacje pogodowe
 	    	</div>
 	    	</a>
    		 </div>
-   		     	<div align="center" class="float-left">
+   		     	<div align="center" class="indexMenuItem">
     	<a href="{%url "forecast"%}">
     		<div>
     			<img src="{% static "img/wheather_forecast_index.jpg" %}"/> 
@@ -31,7 +31,7 @@
 	    	</div>
 	    	</a>
    		 </div>
-   		     	<div align="center" class="float-left">
+   		     	<div align="center" class="indexMenuItem">
     	<a href="{%url "stations"%}">
     		<div>
     			<img src="{% static "img/statistics_index.png" %}"/> 
@@ -41,7 +41,6 @@
 	    	</div>
 	    	</a>
    		 </div>
-    
 </div>
 
 </div>
