@@ -3,3 +3,15 @@ http://www.statsoft.pl/textbook/stathome_stat.html?http%3A%2F%2Fwww.statsoft.pl%
 https://www.e-sgh.pl/niezbednik/plik.php?id=27274541&pid=3424
 http://el.us.edu.pl/ekonofizyka/index.php/Analiza_Szereg%C3%B3w_Czasowych/Dekompozycja_szeregu_czasowego
 
+
+
+
+Przydatne kursy:
+http://statsmodels.sourceforge.net/devel/examples/notebooks/generated/tsa_arma.html
+
+http://stats.stackexchange.com/questions/134487/analyse-acf-and-pacf-plots
+
+http://www.ioz.pwr.wroc.pl/Pracownicy/kaplon/R/R_szeregi_SARIMA.htm
+
+DANE:
+http://www.wunderground.com/personal-weather-station/dashboard?ID=IDOLNOSL3#history/tdata/s20130101/e20150411/mcustom
