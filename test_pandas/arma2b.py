@@ -44,10 +44,14 @@ plt.show()
 #Ostatecznie wyznaczenie proponowanych parametrow p i q
 p = 0
 q = 0
-while p < len(lags) and acf_peaks[p] > 0:
+while p < len(lags) and pacf_peaks[p] > 0:
 	p = p+1
-while q < len(lags) and pacf_peaks[q] > 0:
+while q < len(lags) and acf_peaks[q] > 0:
 	q = q+1
+if(p>10):
+	p=10
+if(q>10):
+	q=10
 
 print("WYBRANE PARAMETRY P i Q:",p,q)
 if(p>q):

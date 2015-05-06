@@ -119,7 +119,7 @@ print("ARIMA dopasowanie: ",p_best,d_best,q_best)
 print("AIC: ", AIC_best)
 
 #dane = dane.diff(4).dropna()
-arima_mod_ost = sm.tsa.ARIMA(dane, (p_best,d_best,q_best)).fit(transparams=False)
+arima_mod_ost = sm.tsa.ARIMA(dane, (p_best,d_best,q_best)).fit(transparams = False)
 #arma_check = arimap.ArmaProcess(arima_mod_ost.arparams,arima_mod_ost.maparams)
 #print(arma_check.isstationary())
 
