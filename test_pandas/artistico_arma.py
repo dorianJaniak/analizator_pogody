@@ -58,29 +58,84 @@ def minimalizujPiQ(p,q):
 	print("PRZEKONWERTOWANE PARAMETRY P i Q:",p,q)
 	return p,q	
 
-def usrednijWykres2(dane,rzad,ileNowych):
-	dane2 = range(0,len(dane.values.squeeze()));
-	
-	coef = np.polyfit(dane2,dane.values.squeeze(),rzad)
+def artistico_usrednijWykres(dane,rzad,ileNowych):
+	daneX = range(0,len(dane.values.squeeze()));
+	coef = np.polyfit(daneX,dane.values.squeeze(),rzad)
 	polynomial = np.poly1d(coef)
 	ys = polynomial(range(0,len(dane.values.squeeze())+ileNowych))
 	return ys
 
+def artistico_odejmijTrend(daneOryg,trend):
+	wynik = daneOryg.values.squeeze();	
+	for i in range(0,len(daneOryg.values.squeeze() )):
+		wynik[i] = wynik[i] - trend[i]
+	return wynik
+
+def artistico_obliczWzmocnienie(dane,predykcja):
+	kPredykcja = predykcja.copy().values.squeeze();	
+	ileBracPodUwage = 10
+	sredniaPred = 0
+	maxPred = -9999999
+	minPred = 9999999
+	for i in range(30,30+ileBracPodUwage):
+		sredniaPred = sredniaPred + kPredykcja[i]
+		if kPredykcja[i]<minPred:
+			minPred = kPredykcja[i]
+		if kPredykcja[i]>maxPred:
+			maxPred = kPredykcja[i]
+	sredniaPred = sredniaPred / ileBracPodUwage;
+	sredniaDane = 0
+	maxDane = -9999999
+	minDane = 9999999
+	kDane = dane.values.squeeze();
+	for i in range(len(kDane)-ileBracPodUwage,len(kDane)):
+		sredniaDane = sredniaDane + kDane[i]
+		if kDane[i]<minDane:
+			minDane = kDane[i]
+		if kDane[i]>maxDane:
+			maxDane = kDane[i]
+	sredniaDane = sredniaDane / ileBracPodUwage;
+
+	wspWGore = (maxDane-sredniaDane)/(maxPred-sredniaPred);
+	wspWDol = (minDane-sredniaDane)/(minPred-sredniaPred);
+	
+	print("WZMOCNIENIE:",wspWGore, wspWDol)
+
+	kPredykcja = predykcja.values.squeeze();
+	for i in range(30,len(kPredykcja)):
+		if kPredykcja[i] > sredniaPred:		
+			kPredykcja[i] = (kPredykcja[i]-sredniaPred)*wspWGore + sredniaPred;
+		else:
+			kPredykcja[i] = sredniaPred - ((sredniaPred-kPredykcja[i])*wspWDol);
+	return 0
 
 
+
+
+
+
+
+
+
+ileDniPrognoza = 7
 dta =pd.read_csv("d.csv", parse_dates=True, index_col=[0])
 dta.plot(figsize=(12,8));
 
-artistico_trend = usrednijWykres2(dta,20,7)
-plt.plot(dta)
-plt.plot(artistico_trend)
+artistico_trend = artistico_usrednijWykres(dta.copy(),20,ileDniPrognoza)
+artistico_wahania = artistico_odejmijTrend(dta.copy(),artistico_trend)
+fig = plt.figure(figsize=(12,8))
+ax1 = fig.add_subplot(211)
+ax2 = fig.add_subplot(212)
+ax1.plot(dta)
+ax1.plot(artistico_trend)
+ax2.plot(artistico_wahania)
 plt.show()
+
+#gdyby tutaj zrobic bez dta.copy to zmiany zostana zatwierdzone
 
 good_proces = False
 p,q = wyznaczPiQ(dta)
 p,q = minimalizujPiQ(p,q)
-	
-
 
 
 p_best = p
@@ -88,25 +143,25 @@ q_best = q
 p_tmp = p
 q_tmp = q
 AIC_best = 99999999
-while p_tmp>=1:
-	while q_tmp>=0:
-		print("TEST ARMA: ", p_tmp,q_tmp)
-		try:
-			arma_mod = sm.tsa.ARMA(dta, (p_tmp,q_tmp)).fit()
-			if AIC_best > arma_mod.aic:
-				p_best = p_tmp
-				q_best = q_tmp
-				AIC_best = arma_mod.aic
-		except:
-			print("NIESTACJONARNY lub NIEODWRACALNY")
-		finally:
-			q_tmp = q_tmp -1
-	q_tmp = q
-	p_tmp = p_tmp -1
+#while p_tmp>=1:
+#	while q_tmp>=0:
+#		print("TEST ARMA: ", p_tmp,q_tmp)
+#		try:
+#			arma_mod = sm.tsa.ARMA(dta, (p_tmp,q_tmp)).fit()
+#			if AIC_best > arma_mod.aic:
+#				p_best = p_tmp
+#				q_best = q_tmp
+#				AIC_best = arma_mod.aic
+#		except:
+#			print("NIESTACJONARNY lub NIEODWRACALNY")
+#		finally:
+#			q_tmp = q_tmp -1
+#	q_tmp = q
+#	p_tmp = p_tmp -1
 print("ARMA dopasowanie: ",p_best,q_best)
 print("AIC: ", AIC_best)
 
-arma_mod = sm.tsa.ARMA(dta, (p_best,q_best)).fit()
+arma_mod = sm.tsa.ARMA(dta, (1,8)).fit()
 arma_check = arimap.ArmaProcess(arma_mod.arparams,arma_mod.maparams)
 print(arma_check.isstationary())
 
@@ -114,6 +169,8 @@ fig, ax = plt.subplots(figsize=(12, 8))
 preds = arma_mod.predict(len(dta)-30,len(dta)+30)
 
 x_prediction = np.arange(len(dta)-31,len(dta)+30,1)
+artistico_obliczWzmocnienie(dta,preds)
 plt.plot(x_prediction,preds)
 plt.plot(dta)
 plt.show()
+
