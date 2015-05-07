@@ -71,9 +71,10 @@ def artistico_odejmijTrend(daneOryg,trend):
 		wynik[i] = wynik[i] - trend[i]
 	return wynik
 
-def artistico_obliczWzmocnienie(dane,predykcja):
+def artistico_obliczWzmocnienie(dane,predykcja,trend,ileBracPodUwage):
 	kPredykcja = predykcja.copy().values.squeeze();	
-	ileBracPodUwage = 10
+	if(ileBracPodUwage>10):
+		ileBracPodUwage = 10
 	sredniaPred = 0
 	maxPred = -9999999
 	minPred = 9999999
@@ -104,9 +105,13 @@ def artistico_obliczWzmocnienie(dane,predykcja):
 	kPredykcja = predykcja.values.squeeze();
 	for i in range(30,len(kPredykcja)):
 		if kPredykcja[i] > sredniaPred:		
-			kPredykcja[i] = (kPredykcja[i]-sredniaPred)*wspWGore + sredniaPred;
+#			kPredykcja[i] = (kPredykcja[i]-sredniaPred)*wspWGore + sredniaPred;
+			kPredykcja[i] = (kPredykcja[i]-sredniaPred)*wspWGore + trend[i-1];
+			#print(kPredykcja[i],trend[i-1],i)
 		else:
-			kPredykcja[i] = sredniaPred - ((sredniaPred-kPredykcja[i])*wspWDol);
+#			kPredykcja[i] = sredniaPred - ((sredniaPred-kPredykcja[i])*wspWDol);
+			kPredykcja[i] = trend[i-1] - ((sredniaPred-kPredykcja[i])*wspWDol)
+			#print(kPredykcja[i],trend[i-1],i)
 	return 0
 
 
@@ -117,7 +122,7 @@ def artistico_obliczWzmocnienie(dane,predykcja):
 
 
 
-ileDniPrognoza = 7
+ileDniPrognoza = 14
 dta =pd.read_csv("d.csv", parse_dates=True, index_col=[0])
 dta.plot(figsize=(12,8));
 
@@ -143,34 +148,35 @@ q_best = q
 p_tmp = p
 q_tmp = q
 AIC_best = 99999999
-#while p_tmp>=1:
-#	while q_tmp>=0:
-#		print("TEST ARMA: ", p_tmp,q_tmp)
-#		try:
-#			arma_mod = sm.tsa.ARMA(dta, (p_tmp,q_tmp)).fit()
-#			if AIC_best > arma_mod.aic:
-#				p_best = p_tmp
-#				q_best = q_tmp
-#				AIC_best = arma_mod.aic
-#		except:
-#			print("NIESTACJONARNY lub NIEODWRACALNY")
-#		finally:
-#			q_tmp = q_tmp -1
-#	q_tmp = q
-#	p_tmp = p_tmp -1
+while p_tmp>=1:
+	while q_tmp>=0:
+		print("TEST ARMA: ", p_tmp,q_tmp)
+		try:
+			arma_mod = sm.tsa.ARMA(dta, (p_tmp,q_tmp)).fit()
+			if AIC_best > arma_mod.aic:
+				p_best = p_tmp
+				q_best = q_tmp
+				AIC_best = arma_mod.aic
+		except:
+			print("NIESTACJONARNY lub NIEODWRACALNY")
+		finally:
+			q_tmp = q_tmp -1
+	q_tmp = q
+	p_tmp = p_tmp -1
 print("ARMA dopasowanie: ",p_best,q_best)
 print("AIC: ", AIC_best)
 
-arma_mod = sm.tsa.ARMA(dta, (1,8)).fit()
+arma_mod = sm.tsa.ARMA(dta, (p_best,q_best)).fit()
 arma_check = arimap.ArmaProcess(arma_mod.arparams,arma_mod.maparams)
 print(arma_check.isstationary())
 
 fig, ax = plt.subplots(figsize=(12, 8))
-preds = arma_mod.predict(len(dta)-30,len(dta)+30)
+preds = arma_mod.predict(len(dta)-30,len(dta)+ileDniPrognoza)
 
-x_prediction = np.arange(len(dta)-31,len(dta)+30,1)
-artistico_obliczWzmocnienie(dta,preds)
+x_prediction = np.arange(len(dta)-31,len(dta)+ileDniPrognoza,1)
+artistico_obliczWzmocnienie(dta,preds,artistico_trend[len(dta)-30:],ileDniPrognoza)
 plt.plot(x_prediction,preds)
 plt.plot(dta)
 plt.show()
 
+print("PREDYKCJA:", preds[30:])
