@@ -168,7 +168,7 @@ print("AIC: ", AIC_best)
 
 arma_mod = sm.tsa.ARMA(dta, (p_best,q_best)).fit()
 arma_check = arimap.ArmaProcess(arma_mod.arparams,arma_mod.maparams)
-print(arma_check.isstationary())
+#print(arma_check.isstationary())
 
 fig, ax = plt.subplots(figsize=(12, 8))
 preds = arma_mod.predict(len(dta)-30,len(dta)+ileDniPrognoza)
