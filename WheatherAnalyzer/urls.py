@@ -1,7 +1,8 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from Analyzer.views import IndexView, StationsView, \
-    StationsDetailView, ForecastView, AuthorsView, dataview
+    StationsDetailView, ForecastView, AuthorsView, dataview, \
+    LoginView, LogoutView
 
 # urlpatterns=patterns('',url(r'^$',views.index,name='index'))
 urlpatterns = [
@@ -11,5 +12,9 @@ urlpatterns = [
     url(r'^forecast/$', ForecastView.as_view(), name="forecast"),
     url(r'^authors/$',AuthorsView.as_view(),name='authors'),
     url(r'^forecast/forecast.png$',dataview,name='image_forecast'),
+    url(r'^login/$', LoginView.as_view(), name="login"),
+    url(r'^logout/$', LogoutView.as_view(), name="logout"),
     url(r'^admin/', include(admin.site.urls)),
+
+
 ]
