@@ -72,16 +72,16 @@ class Algorithm:
         acf_confint = acf_confint - acf_confint.mean(1)[:,None]
         pacf_confint = pacf_confint - pacf_confint.mean(1)[:,None]
 
-        fig = plt.figure(figsize=(12,8))
-        ax1 = fig.add_subplot(211)
-        ax2 = fig.add_subplot(212)
+        #fig = plt.figure(figsize=(12,8))
+        #ax1 = fig.add_subplot(211)
+        #ax2 = fig.add_subplot(212)
 
-        ax1.plot(lags,acf_acf)
-        ax1.fill_between(lags,acf_confint[:,0], acf_confint[:,1], alpha=.25)
-        ax1.set_title("ACF")
-        ax2.plot(lags,pacf_pacf)
-        ax2.fill_between(lags,pacf_confint[:,0], pacf_confint[:,1], alpha=.25)
-        ax2.set_title("PACF")
+        #ax1.plot(lags,acf_acf)
+        #ax1.fill_between(lags,acf_confint[:,0], acf_confint[:,1], alpha=.25)
+        #ax1.set_title("ACF")
+        #ax2.plot(lags,pacf_pacf)
+        #ax2.fill_between(lags,pacf_confint[:,0], pacf_confint[:,1], alpha=.25)
+        #ax2.set_title("PACF")
 
         acf_peaks = abs(acf_acf) - abs(acf_confint[:,0])
         pacf_peaks = abs(pacf_pacf) - abs(pacf_confint[:,0])
@@ -93,7 +93,7 @@ class Algorithm:
             p = p+1
         while q < len(lags) and acf_peaks[q] > 0:
             q = q+1
-        print("WYBRANE PARAMETRY P i Q:",p,q)
+        #print("WYBRANE PARAMETRY P i Q:",p,q)
         #plt.show()
         return p,q
 
@@ -110,11 +110,11 @@ class Algorithm:
             p = maxVal
         if(q>maxVal):
             q = maxVal
-        print("PRZEKONWERTOWANE PARAMETRY P i Q:",p,q)
+        #print("PRZEKONWERTOWANE PARAMETRY P i Q:",p,q)
         return p,q
 
     def artistico_usrednijWykres(self, dane,rzad,ileNowych):
-        print(" w funckji")
+        #print(" w funckji")
         daneX = range(0,len(dane.values.squeeze()))
         coef = np.polyfit(daneX,dane.values.squeeze(),rzad)
         polynomial = np.poly1d(coef)
@@ -156,18 +156,18 @@ class Algorithm:
         wspWGore = (maxDane-sredniaDane)/(maxPred-sredniaPred)
         wspWDol = (minDane-sredniaDane)/(minPred-sredniaPred)
 
-        print("WZMOCNIENIE:",wspWGore, wspWDol)
+        #print("WZMOCNIENIE:",wspWGore, wspWDol)
 
         kPredykcja = predykcja.values.squeeze()
         for i in range(30,len(kPredykcja)):
             if kPredykcja[i] > sredniaPred:
     #			kPredykcja[i] = (kPredykcja[i]-sredniaPred)*wspWGore + sredniaPred;
                 kPredykcja[i] = (kPredykcja[i]-sredniaPred)*wspWGore + trend[i-1];
-                print(kPredykcja[i],trend[i-1],i)
+                #print(kPredykcja[i],trend[i-1],i)
             else:
     #			kPredykcja[i] = sredniaPred - ((sredniaPred-kPredykcja[i])*wspWDol);
                 kPredykcja[i] = trend[i-1] - ((sredniaPred-kPredykcja[i])*wspWDol)
-                print(kPredykcja[i],trend[i-1],i)
+                #print(kPredykcja[i],trend[i-1],i)
         return 0
 
 
@@ -180,10 +180,7 @@ class Algorithm:
         #ax1 = fig.add_subplot(211)
         #ax2 = fig.add_subplot(212)
         # dta.plot(figsize=(12,8));
-        print("tutej")
         artistico_trend = self.artistico_usrednijWykres(dane=self.dta.copy(),rzad=20,ileNowych=self.ileDniPrognoza)
-        print("tutej 1.1")
-
         artistico_wahania = self.artistico_odejmijTrend(daneOryg=self.dta.copy(),trend=artistico_trend)
 
 
@@ -199,10 +196,10 @@ class Algorithm:
 
         good_proces = False
         p,q = self.wyznaczPiQ(dane=self.dta)
-        print("tutej 1.5")
+        #print("tutej 1.5")
 
         p,q = self.minimalizujPiQ(p,q)
-        print("tutej 2")
+        #print("tutej 2")
 
 
         p_best = p
@@ -226,8 +223,8 @@ class Algorithm:
                     q_tmp = q_tmp -1
             q_tmp = q
             p_tmp = p_tmp -1
-        print("ARMA dopasowanie: ",p_best,q_best)
-        print("AIC: ", AIC_best)
+        #print("ARMA dopasowanie: ",p_best,q_best)
+        #print("AIC: ", AIC_best)
 
         arma_mod = sm.tsa.ARMA(self.dta, (p_best,q_best)).fit()
         arma_check = arimap.ArmaProcess(arma_mod.arparams,arma_mod.maparams)
@@ -241,5 +238,6 @@ class Algorithm:
         # plt.plot(x_prediction,self.preds)
         # plt.plot(dta)
         # plt.show()
+        print(" PROCESSING DONE ")
 
-        print("PREDYKCJA:", preds[30:])
+        # print("PREDYKCJA:", self.preds[30:])

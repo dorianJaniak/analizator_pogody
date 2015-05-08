@@ -115,7 +115,22 @@ class AuthorsView(LoginRequiredMixin,TemplateView):
     template_name='analyzer/authors.html'
 
 # TODO
-def dataview(request):
+def dataview(request, *args, **kwargs ):
+    pass
+    alg = Algorithm(dlugosc_prognozy=14)
+    alg.mainAlg()
+
+    fig=Figure()
+    ax=fig.add_subplot(111)
+    #ax.plot(alg.dta)
+    ax.plot(alg.x_prediction,alg.preds)
+    ax.plot(alg.dta)
+    canvas=FigureCanvas(fig)
+    response=HttpResponse(content_type='image/png')
+    canvas.print_png(response)
+    return response
+
+def data_station_view(request, *args, **kwargs ):
     pass
     alg = Algorithm(dlugosc_prognozy=14)
 
