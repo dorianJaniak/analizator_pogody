@@ -1,14 +1,14 @@
 {% extends "analyzer/base.html"%}
-{% block title %} - stacje pogodowe {% endblock %}
+{% block title %} - prognoza {% endblock %}
 {% block content %}
 
 <div id="Index">
-<h1>Stacje pogodowe</h1>
+<h1>Prognoza</h1>
 
- {% if station_list %}
+{% if station_list %}
     <table class="table">
         <thead>
-       <tr>
+        <tr>
             <th class="col-lg-2">Miasto</th>
             <!--<th class="col-lg-1">Rodzaj pomiaru</th>-->
             {% for rodzaj_pom in rodzaj_pomiaru_list %}
@@ -24,7 +24,7 @@
 
               {% for rodzaj_pom in rodzaj_pomiaru_list %}
              <td>
-                 <a  class="btn btn-default" href="{% url 'station_detail' station.id rodzaj_pom.id %}">
+                 <a  class="btn btn-default" href="{% url 'forecast_det' station.id rodzaj_pom.id %}">
                {{ rodzaj_pom.nazwa }}</a>
              </td>
           {% endfor %}
