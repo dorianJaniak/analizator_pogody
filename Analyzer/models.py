@@ -11,6 +11,7 @@ import statsmodels.tsa.arima_process as arimap
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.dates import DateFormatter
+from django.utils.encoding import smart_str, smart_unicode
 # prognoza
 
 from django.db import models
@@ -24,14 +25,14 @@ class Stacja(models.Model):
     id = models.AutoField(primary_key=True)
     nazwa = models.CharField(max_length=30)
 
-    def __str__(self):
+    def __unicode__(self):
         return self.nazwa
-
+    
 class Jednostka(models.Model):
     id = models.AutoField(primary_key=True)
     nazwa = models.CharField(max_length=20)
 
-    def __str__(self):
+    def __unicode__(self):
         return self.nazwa
 
 class RodzajPomiaru(models.Model):
@@ -39,7 +40,7 @@ class RodzajPomiaru(models.Model):
     nazwa = models.CharField(max_length=20)
     jednostka = models.ForeignKey(Jednostka,null=True)
 
-    def __str__(self):
+    def __unicode__(self):
         return self.nazwa
 
 
@@ -50,8 +51,8 @@ class DanePomiarowe(models.Model):
     stacja = models.ForeignKey(Stacja, null=True)
     data = models.DateTimeField(default=datetime.now(), null=True)
 
-    def __str__(self):
-        return "%s [%s] @ %s" % (self.wartosc, self.rodzaj_pomiaru, self.stacja)
+    def __unicode__(self):
+        return u"%s [%s] @ %s" % (self.wartosc, self.rodzaj_pomiaru, self.stacja)
 
 class Algorithm:
     #To jest bardzo artystyczna prognoza pogody

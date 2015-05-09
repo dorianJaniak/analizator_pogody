@@ -69,7 +69,7 @@ WSGI_APPLICATION = 'WheatherAnalyzer.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'mysql.connector.django',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'WheatherAnalyzer',
         'USER': 'root',
         'PASSWORD':'maroch1993',

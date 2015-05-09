@@ -2,6 +2,34 @@
 {% block title %} - stacja {% endblock %}
 {% block content %}
 
+ <script type="text/javascript"
+          src="https://www.google.com/jsapi?autoload={
+            'modules':[{
+              'name':'visualization',
+              'version':'1',
+              'packages':['corechart']
+            }]
+          }"></script>
+
+    <script type="text/javascript">
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+     	var djangoData = {{ chartData.Temperatura | safe }};
+    	var data = google.visualization.arrayToDataTable(djangoData)
+
+        var options = {
+          title: '',
+          curveType: 'function',
+          legend: { position: 'bottom' },
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+
+
 <div id="Index">
 <h1>Stacja - {{ station }} </h1>
 
@@ -25,13 +53,8 @@
         {% endfor %}
            </tbody>
         </table>
-
     <p>
-        TODO.
-    </p>
-    <p>
-        tu jest obrazek z danymi obecnymi.
-        <img src="{% url 'image_current' station.id %}" />
+        <div id="curve_chart"></div>
     </p>
 
     {% else %}

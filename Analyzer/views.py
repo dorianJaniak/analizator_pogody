@@ -24,7 +24,8 @@ from django.contrib.auth import REDIRECT_FIELD_NAME, login, logout
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
-
+import json
+from django.core.serializers.json import DjangoJSONEncoder
 
 class LoginRequiredMixin(object):
     u"""Ensures that user must be authenticated in order to access view."""
@@ -104,7 +105,15 @@ class StationsDetailView(TemplateView):
         station_id = kwargs['station_id']
         context = super(StationsDetailView, self).get_context_data(**kwargs)
         context['station'] = get_object_or_404(Stacja, id=station_id)
-        print(context['station'])
+        context['chartData']={}
+        for i in RodzajPomiaru.objects.all():    
+            print(DanePomiarowe.objects.filter(stacja__id=station_id,rodzaj_pomiaru__id=i.id))
+            pomiary=[('data',str(i))]
+            for pomiar in DanePomiarowe.objects.filter(stacja__id=station_id,rodzaj_pomiaru__id=i.id):
+                pomiary.append((pomiar.data.strftime("%d-%m-%Y"),pomiar.wartosc))
+            context['chartData'][str(i)] = json.dumps((pomiary),cls=DjangoJSONEncoder)
+            
+        #print(context['station'])
         context['dane_pom'] = DanePomiarowe.objects.filter(stacja__id=station_id)
         return context
 
