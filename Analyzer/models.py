@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
+#from adaptor.model import CsvModel
+
 import numpy as np
 from scipy import stats
 import pandas as pd
@@ -22,21 +24,21 @@ from datetime import datetime
 # Create your models here.
 
 class Stacja(models.Model):
-    id = models.AutoField(primary_key=True)
+    # id = models.AutoField(primary_key=True)
     nazwa = models.CharField(max_length=30)
 
     def __unicode__(self):
         return self.nazwa
     
 class Jednostka(models.Model):
-    id = models.AutoField(primary_key=True)
+    # id = models.AutoField(primary_key=True)
     nazwa = models.CharField(max_length=20)
 
     def __unicode__(self):
         return self.nazwa
 
 class RodzajPomiaru(models.Model):
-    id = models.AutoField(primary_key=True)
+    # id = models.AutoField(primary_key=True)
     nazwa = models.CharField(max_length=20)
     jednostka = models.ForeignKey(Jednostka,null=True)
 
@@ -45,7 +47,7 @@ class RodzajPomiaru(models.Model):
 
 
 class DanePomiarowe(models.Model):
-    id = models.AutoField(primary_key=True)
+    # id = models.AutoField(primary_key=True)
     wartosc = models.IntegerField()
     rodzaj_pomiaru = models.ForeignKey(RodzajPomiaru, null=True)
     stacja = models.ForeignKey(Stacja, null=True)
@@ -53,6 +55,18 @@ class DanePomiarowe(models.Model):
 
     def __unicode__(self):
         return u"%s [%s] @ %s" % (self.wartosc, self.rodzaj_pomiaru, self.stacja)
+
+# class DanePomiaroweCsvModel(CsvModel):
+#     wartosc = IntegerField()
+#     rodzaj_pomiaru = DjangoModelField(RodzajPomiaru)
+#     stacja = DjangoModelField(RodzajPomiaru)
+#     data = DateField()
+#
+#     class Meta:
+#         delimiter= ","
+#         dbModel=DanePomiarowe
+#
+
 
 class Algorithm:
     #To jest bardzo artystyczna prognoza pogody

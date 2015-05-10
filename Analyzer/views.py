@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404, \
-    render_to_response
+    render_to_response, redirect
 from Analyzer.models import Jednostka, RodzajPomiaru,DanePomiarowe, \
     Stacja, Algorithm
-from Analyzer.forms import LoginForm
+from Analyzer.forms import LoginForm, LoadFilenameForm
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic import TemplateView, FormView, CreateView,\
     UpdateView, DeleteView
@@ -24,8 +24,13 @@ from django.contrib.auth import REDIRECT_FIELD_NAME, login, logout
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
+
 import json
 from django.core.serializers.json import DjangoJSONEncoder
+
+import csv
+from io import TextIOWrapper
+
 
 class LoginRequiredMixin(object):
     u"""Ensures that user must be authenticated in order to access view."""
@@ -120,8 +125,50 @@ class StationsDetailView(TemplateView):
 class ForecastView(TemplateView):
     template_name = "analyzer/forecast.html"
 
-class AuthorsView(LoginRequiredMixin,TemplateView):
+class AuthorsView(TemplateView):
     template_name='analyzer/authors.html'
+
+class LoadDataView(LoginRequiredMixin,FormView):
+    template_name ='analyzer/load_data.html'
+    form_class = LoadFilenameForm
+    success_url = reverse_lazy("authors")
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form':form})
+
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST, request.FILES)
+
+        if form.is_valid():
+            f = TextIOWrapper(request.FILES['file'].file, encoding=request.encoding)
+            list = csv.reader(f)
+
+            for row in list:
+                # print(row)
+                _,created=DanePomiarowe.objects.get_or_create(
+                        wartosc=int(row[3]),
+                        rodzaj_pomiaru=get_object_or_404(RodzajPomiaru,nazwa=row[2]),
+                        stacja=get_object_or_404(Stacja,nazwa=row[0]),
+                        data=datetime.datetime.strptime( row[1], "%Y%m%d")
+                    )
+
+            return redirect(self.success_url)
+        else:
+            return render(request, self.template_name, {'form':form})
+
+    def filenames(self):
+        return self.filename
+
+
+
+    def get_context_data(self, **kwargs):
+        context=super(LoadDataView, self).get_context_data(self,**kwargs)
+        context['filename']=self.filename
+        print("context "+self.filename)
+        return context
+
 
 # TODO
 def dataview(request, *args, **kwargs ):
