@@ -101,6 +101,8 @@ class StationsView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(StationsView, self).get_context_data(**kwargs)
         context['station_list'] = Stacja.objects.all()
+        context['rodzaj_pomiaru_list']=RodzajPomiaru.objects.all()
+
         return context
 
 class StationsDetailView(TemplateView):
@@ -108,25 +110,91 @@ class StationsDetailView(TemplateView):
 
     def get_context_data(self, **kwargs):
         station_id = kwargs['station_id']
+        rodzaj_pom_id=kwargs['rodzaj_pom_id']
+        rodzaj_pom_nazwa=RodzajPomiaru.objects.filter(id=rodzaj_pom_id).first().nazwa;
         context = super(StationsDetailView, self).get_context_data(**kwargs)
         context['station'] = get_object_or_404(Stacja, id=station_id)
-        context['chartData']={}
-        for i in RodzajPomiaru.objects.all():    
-            print(DanePomiarowe.objects.filter(stacja__id=station_id,rodzaj_pomiaru__id=i.id))
-            pomiary=[('data',str(i))]
-            for pomiar in DanePomiarowe.objects.filter(stacja__id=station_id,rodzaj_pomiaru__id=i.id):
-                pomiary.append((pomiar.data.strftime("%d-%m-%Y"),pomiar.wartosc))
-            context['chartData'][str(i)] = json.dumps((pomiary),cls=DjangoJSONEncoder)
-            
-        #print(context['station'])
-        context['dane_pom'] = DanePomiarowe.objects.filter(stacja__id=station_id)
+
+        context['chartData']={}    
+        pomiary=[('data',rodzaj_pom_nazwa)]
+        for pomiar in DanePomiarowe.objects.filter(stacja__id=station_id,rodzaj_pomiaru__id=rodzaj_pom_id):
+            pomiary.append((pomiar.data.strftime("%d-%m-%Y"),pomiar.wartosc))
+        context['chartData'] = json.dumps((pomiary),cls=DjangoJSONEncoder)
+
+        context['dane_pom'] = DanePomiarowe.objects.filter(stacja__id=station_id, rodzaj_pomiaru__id=rodzaj_pom_id)
+        context['rodzaj_pom'] = get_object_or_404(RodzajPomiaru, id=rodzaj_pom_id)
+
+        return context
+
+class ForecastFormView(TemplateView):
+    template_name = "analyzer/forecast_form.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ForecastFormView,self).get_context_data(**kwargs)
+        context['station_list']=Stacja.objects.all()
+        context['rodzaj_pomiaru_list']=RodzajPomiaru.objects.all()
         return context
 
 class ForecastView(TemplateView):
     template_name = "analyzer/forecast.html"
 
+    def get_context_data(self, **kwargs):
+        station_id = kwargs['station_id']
+        rodzaj_pom_id=kwargs['rodzaj_pom_id']
+        context = super(ForecastView, self).get_context_data(**kwargs)
+        context['station'] = get_object_or_404(Stacja, id=station_id)
+        context['rodzaj_pom'] = get_object_or_404(RodzajPomiaru, id=rodzaj_pom_id)
+
+        return context
+
 class AuthorsView(TemplateView):
     template_name='analyzer/authors.html'
+
+class DanePomiaroweDeleteView(LoginRequiredMixin,TemplateView):
+    template_name = 'analyzer/delete.html'
+    #model = DanePomiarowe
+    success_url = reverse_lazy('index')
+    station_id=[]
+
+    def get_context_data(self, **kwargs):
+        self.station_id = kwargs['station_id']
+        #rodzaj_pom_id=kwargs['rodzaj_pom_id']
+        context = super(DanePomiaroweDeleteView, self).get_context_data(**kwargs)
+        stacja = get_object_or_404(Stacja, id=self.station_id)
+
+        #DanePomiarowe.objects.filter(stacja__id=self.station_id).delete()
+        context['station'] = stacja
+
+        #context['rodzaj_pom'] = get_object_or_404(RodzajPomiaru, id=rodzaj_pom_id)
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.station_id = kwargs['station_id']
+        stacja = get_object_or_404(Stacja, id=self.station_id)
+        DanePomiarowe.objects.filter(stacja__id=self.station_id).delete()
+        #return render(request,self.template_name)
+        return redirect(self.success_url)
+
+
+
+    # def get_queryset(self):
+    #     qs=super(DanePomiaroweDeleteView,self).get_queryset()
+    #     return  qs.filter(stacja__id=self.station_id)
+
+    # def get_object(self, queryset=None):
+    #     obj = DanePomiarowe.objects.filter(stacja__id=self.station_id)
+    #     return obj
+    #
+    # def my_delete(self):
+    #      DanePomiarowe.objects.filter(stacja__id=station_id).delete()
+
+
+
+    # def get_queryset(self):
+    #     qs = super(DanePomiaroweDeleteView, self).get_queryset()
+    #     return qs.filter()
+
 
 class LoadDataView(LoginRequiredMixin,FormView):
     template_name ='analyzer/load_data.html'
@@ -158,22 +226,13 @@ class LoadDataView(LoginRequiredMixin,FormView):
         else:
             return render(request, self.template_name, {'form':form})
 
-    def filenames(self):
-        return self.filename
-
-
-
-    def get_context_data(self, **kwargs):
-        context=super(LoadDataView, self).get_context_data(self,**kwargs)
-        context['filename']=self.filename
-        print("context "+self.filename)
-        return context
 
 
 # TODO
 def dataview(request, *args, **kwargs ):
-    pass
-    alg = Algorithm(dlugosc_prognozy=14)
+    stacja=kwargs['station_id']
+    rodzaj_pom=kwargs['rodzaj_pom_id']
+    alg = Algorithm(dlugosc_prognozy=14, stacja_id=stacja, rodzaj_pomiaru=rodzaj_pom)
     alg.mainAlg()
 
     fig=Figure()
@@ -187,8 +246,9 @@ def dataview(request, *args, **kwargs ):
     return response
 
 def data_station_view(request, *args, **kwargs ):
-    pass
-    alg = Algorithm(dlugosc_prognozy=14)
+    stacja=kwargs['station_id']
+    rodzaj_pom=kwargs['rodzaj_pom_id']
+    alg = Algorithm(dlugosc_prognozy=14, stacja_id=stacja, rodzaj_pomiaru=rodzaj_pom)
 
     fig=Figure()
     ax=fig.add_subplot(111)

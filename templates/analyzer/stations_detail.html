@@ -13,19 +13,24 @@
 
     <script type="text/javascript">
       google.setOnLoadCallback(drawChart);
-      function drawChart() {
-     	var djangoData = {{ chartData.Temperatura | safe }};
-    	var data = google.visualization.arrayToDataTable(djangoData)
+      function drawChart() 
+      {
+     	var djangoData = {{ chartData | safe }};
+    	
+    	if(djangoData.length>1)
+    	{
+    		var data = google.visualization.arrayToDataTable(djangoData)
 
-        var options = {
-          title: '',
-          curveType: 'function',
-          legend: { position: 'bottom' },
-        };
+        	var options = {
+          	title: '',
+          	curveType: 'function',
+          	legend: { position: 'bottom' },
+        	};
 
-        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        	var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
 
-        chart.draw(data, options);
+        	chart.draw(data, options);
+        }
       }
     </script>
 
@@ -55,6 +60,8 @@
         </table>
     <p>
         <div id="curve_chart"></div>
+    <p>
+        <img src="{% url 'image_current' station.id rodzaj_pom.id %}" />
     </p>
 
     {% else %}

@@ -1,0 +1,16 @@
+{% extends "analyzer/base.html"%}
+{% block title %} - Wczytywanie danych {% endblock %}
+{% block content %}
+
+<div>
+	<p>
+        Tu będzie mozliwosc wczytywania z csv.
+    </p>
+        <form action="{% url 'load_data' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input id="id_file" type="file" name="file" />
+        <input id="submit" type="submit" value="Upload file" />
+        </form>
+</div>
+
+{% endblock %}

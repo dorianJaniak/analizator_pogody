@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 #from adaptor.model import CsvModel
+from django.shortcuts import  get_object_or_404
 
 import numpy as np
 from scipy import stats
@@ -15,6 +16,9 @@ from matplotlib.figure import Figure
 from matplotlib.dates import DateFormatter
 from django.utils.encoding import smart_str, smart_unicode
 # prognoza
+
+from django_pandas.io import read_frame
+from django_pandas.managers import DataFrameManager
 
 from django.db import models
 from datetime import datetime
@@ -53,8 +57,15 @@ class DanePomiarowe(models.Model):
     stacja = models.ForeignKey(Stacja, null=True)
     data = models.DateTimeField(default=datetime.now(), null=True)
 
+
     def __unicode__(self):
         return u"%s [%s] @ %s" % (self.wartosc, self.rodzaj_pomiaru, self.stacja)
+
+    objects = DataFrameManager()
+
+    def __str__(self):
+        return "%s [%s] @ %s" % (self.wartosc, self.rodzaj_pomiaru, self.stacja)
+
 
 # class DanePomiaroweCsvModel(CsvModel):
 #     wartosc = IntegerField()
@@ -70,10 +81,26 @@ class DanePomiarowe(models.Model):
 
 class Algorithm:
     #To jest bardzo artystyczna prognoza pogody
-    #ileDniPrognoza = 14
-    def __init__(self, dlugosc_prognozy=14, ):
+    def __init__(self, dlugosc_prognozy, stacja_id, rodzaj_pomiaru):
         self.ileDniPrognoza = dlugosc_prognozy
-        self.dta =pd.read_csv("test_pandas/d.csv", parse_dates=True, index_col=[0])
+        stacja_q=get_object_or_404(Stacja,id=stacja_id)
+        rodzaj_pomiaru_q=get_object_or_404(RodzajPomiaru,id=rodzaj_pomiaru
+                                           )
+        qs = DanePomiarowe.objects.filter(stacja=stacja_q, rodzaj_pomiaru=rodzaj_pomiaru_q)
+        self.dta=qs.to_dataframe(
+            fieldnames=['data','wartosc'],
+            index='data'
+        )
+        # self.dta=qs.to_timeseries(
+        #     fieldnames=['data','wartosc'],
+        #     index='data',
+        #     #pivot_columns='wartosc',
+        #     values='wartosc',
+        #     storage='wide'
+        # )
+        print(self.dta)
+        print(len(self.dta))
+
         self.preds=[]
         self.x_prediction=[]
 
@@ -195,8 +222,8 @@ class Algorithm:
         #ax1 = fig.add_subplot(211)
         #ax2 = fig.add_subplot(212)
         # dta.plot(figsize=(12,8));
-        artistico_trend = self.artistico_usrednijWykres(dane=self.dta.copy(),rzad=20,ileNowych=self.ileDniPrognoza)
-        artistico_wahania = self.artistico_odejmijTrend(daneOryg=self.dta.copy(),trend=artistico_trend)
+        self.artistico_trend = self.artistico_usrednijWykres(dane=self.dta.copy(),rzad=20,ileNowych=self.ileDniPrognoza)
+        self.artistico_wahania = self.artistico_odejmijTrend(daneOryg=self.dta.copy(),trend=self.artistico_trend)
 
 
         # fig = plt.figure(figsize=(12,8))
@@ -249,7 +276,7 @@ class Algorithm:
         self.preds = arma_mod.predict(len(self.dta)-30,len(self.dta)+self.ileDniPrognoza)
 
         self.x_prediction = np.arange(len(self.dta)-31,len(self.dta)+self.ileDniPrognoza,1)
-        self.artistico_obliczWzmocnienie(self.dta,self.preds,artistico_trend[len(self.dta)-30:],self.ileDniPrognoza)
+        self.artistico_obliczWzmocnienie(self.dta,self.preds,self.artistico_trend[len(self.dta)-30:],self.ileDniPrognoza)
         # plt.plot(x_prediction,self.preds)
         # plt.plot(dta)
         # plt.show()

@@ -1,0 +1,17 @@
+{% extends "analyzer/base.html"%}
+{% block title %} - Usun wszytskie dane pomiarowe {% endblock %}
+{% block content %}
+
+<div>
+	<form action="{% url 'delete_stations' station.id %}" method="post">
+        {% csrf_token %}
+    <p>Are you sure you want to delete?</p>
+    <input type="submit" value="Confirm" />
+</form>
+
+
+
+
+</div>
+
+{% endblock %}
