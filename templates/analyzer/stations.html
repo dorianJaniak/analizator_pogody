@@ -9,12 +9,14 @@
     <table class="table">
         <thead>
        <tr>
-            <th class="col-lg-2">Miasto</th>
+            <th class="col-lg-3">Miasto</th>
             <!--<th class="col-lg-1">Rodzaj pomiaru</th>-->
             {% for rodzaj_pom in rodzaj_pomiaru_list %}
              <th class="col-lg-1">{{ rodzaj_pom.nazwa }}</th>
                       {% endfor %}
-
+               {% if user.is_authenticated %}
+           <th class="col-lg-1"> Akcja </th>
+           {% endif %}
         </tr>
         </thead>
         <tbody>
@@ -26,8 +28,12 @@
              <td>
                  <a  class="btn btn-default" href="{% url 'station_detail' station.id rodzaj_pom.id %}">
                {{ rodzaj_pom.nazwa }}</a>
+
              </td>
           {% endfor %}
+           {% if user.is_authenticated %}
+           <td> <a class="btn btn-default" href="{% url 'delete_stations' station.id %}">Delete</a> </td>
+           {% endif %}
           </tr>
         {% endfor %}
            </tbody>

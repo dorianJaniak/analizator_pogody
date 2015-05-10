@@ -81,13 +81,20 @@ class Algorithm:
         rodzaj_pomiaru_q=get_object_or_404(RodzajPomiaru,id=rodzaj_pomiaru
                                            )
         qs = DanePomiarowe.objects.filter(stacja=stacja_q, rodzaj_pomiaru=rodzaj_pomiaru_q)
-        self.dta=qs.to_timeseries(
-            index='data',
-            pivot_columns='rodzaj_pomiaru',
-            values='wartosc',
-            storage='long'
+        self.dta=qs.to_dataframe(
+            fieldnames=['data','wartosc'],
+            index='data'
         )
-        #print(self.dta)
+        # self.dta=qs.to_timeseries(
+        #     fieldnames=['data','wartosc'],
+        #     index='data',
+        #     #pivot_columns='wartosc',
+        #     values='wartosc',
+        #     storage='wide'
+        # )
+        print(self.dta)
+        print(len(self.dta))
+
         self.preds=[]
         self.x_prediction=[]
 

@@ -139,6 +139,52 @@ class ForecastView(TemplateView):
 class AuthorsView(TemplateView):
     template_name='analyzer/authors.html'
 
+class DanePomiaroweDeleteView(LoginRequiredMixin,TemplateView):
+    template_name = 'analyzer/delete.html'
+    #model = DanePomiarowe
+    success_url = reverse_lazy('index')
+    station_id=[]
+
+    def get_context_data(self, **kwargs):
+        self.station_id = kwargs['station_id']
+        #rodzaj_pom_id=kwargs['rodzaj_pom_id']
+        context = super(DanePomiaroweDeleteView, self).get_context_data(**kwargs)
+        stacja = get_object_or_404(Stacja, id=self.station_id)
+
+        #DanePomiarowe.objects.filter(stacja__id=self.station_id).delete()
+        context['station'] = stacja
+
+        #context['rodzaj_pom'] = get_object_or_404(RodzajPomiaru, id=rodzaj_pom_id)
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.station_id = kwargs['station_id']
+        stacja = get_object_or_404(Stacja, id=self.station_id)
+        DanePomiarowe.objects.filter(stacja__id=self.station_id).delete()
+        #return render(request,self.template_name)
+        return redirect(self.success_url)
+
+
+
+    # def get_queryset(self):
+    #     qs=super(DanePomiaroweDeleteView,self).get_queryset()
+    #     return  qs.filter(stacja__id=self.station_id)
+
+    # def get_object(self, queryset=None):
+    #     obj = DanePomiarowe.objects.filter(stacja__id=self.station_id)
+    #     return obj
+    #
+    # def my_delete(self):
+    #      DanePomiarowe.objects.filter(stacja__id=station_id).delete()
+
+
+
+    # def get_queryset(self):
+    #     qs = super(DanePomiaroweDeleteView, self).get_queryset()
+    #     return qs.filter()
+
+
 class LoadDataView(LoginRequiredMixin,FormView):
     template_name ='analyzer/load_data.html'
     form_class = LoadFilenameForm
