@@ -1,0 +1,16 @@
+Ponieważ dane pogodowe pochodzą jedynie od stacji pogodowych, a więc tylko one powinny mieć uprawnienia do wprowadzania pomiarów. Z tego powodu użytkownicy korzystający z bazy danych zostali podzieleni na dwie grupy:
+\begin{itemize}
+	\item \textbf{użytkownicy anonimowi} - to tacy użytkownicy, którzy mają dostęp jedynie do przeglądania danych pogodowych.
+	\item \textbf{użytkownicy zarejestrowani} - to tacy użytkownicy, którzy mają również możliwość dodawania danych pogodowych oraz ich usuwania. Ponieważ każda stacja musi zostać zweryfikowana (aby nie publikowała fałszywych danych) przez administratorów bazy danych, w aplikacji internetowej nie zostało dodane pole rejestracji użytkowników. Zarejestrowani mogą być bezpośrednio przez administratorów poprzez ręczny wpis ich danych potrzebnych do logowania.  
+\end{itemize}
+Poniżej zamieszczona została tabela zestawiająca funkcję i możliwość korzystania z niej przez poszczególnych użytkowników. Pola oznaczone znakiem X oznaczają, że dany typ użytkownika posiada uprawnienia do wykonywania czynności; w przeciwnym wypadku użytkownik nie ma takiej możliwości.
+
+\begin{longtable}{|p{0.5\linewidth}|p{0.25\linewidth}||p{0.25\linewidth}|}
+\hline
+\textbf{Funkcja} & \textbf{Anonimowy} & \textbf{Zarejestrowany} \tabularnewline \hline \hline
+Wczytanie danych z pliku CSV & - & X \tabularnewline\hline
+Usunięcie danych pogodowych & - & X \tabularnewline\hline
+Wybór stacji i rodzaju danych pomiarowych & X & X \tabularnewline\hline
+Podgląd wykresów pogodowych & X & X \tabularnewline\hline
+Podgląd prognozy pogody & X & X \tabularnewline\hline
+\end{longtable}

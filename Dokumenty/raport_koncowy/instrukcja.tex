@@ -1,8 +1,27 @@
 \subsection{Instalacja bazy danych}
 Baza danych została wdrożona na systemie Linux (przetestowana na dystrybucjach Ubuntu oraz Mint). Aby móc ją uruchomić należy wcześniej zainstalować poniższe pakiety:
 \begin{itemize}
-	\item coś
+	\item python2.7
+	\item python-numpy
+	\item python-scipy
+	\item python-matplotlib
+	\item ipython
+	\item ipython-notebook
+	\item python-pandas
+	\item python-sympy
+	\item python-nose
+	\item python-statsmodels
+	\item python-tk
+	\item mysql-connector-python
+	\item django-pandas
+	\item django-model-utils
+	\item scipy
+	\item mysql-server
 \end{itemize}
+Następnie koniecznie należy zaimportować bazę danych poprzez wywołanie poniższej komendy w terminalu w folderze głównym aplikacji (zawierający plik requirements.txt oraz manage.py):
+\begin{verbatim}
+	python2 manage.py migrate
+\end{verbatim}
 
 \subsection{Przygotowanie plików wejściowych}
 Ponieważ aplikacja webowa nie pobiera sama danych pogodowych z internetu, należy je załadować z pliku. Aby móc to zrobić trzeba przygotować plik CSV zawierający komplet wymaganych informacji.
@@ -26,5 +45,24 @@ W tym celu należy dodać wpisy w odpowiednich tabelach:
 	\item \textbf{Analyzer\_stacja} - dodać nazwę stacji zgodnie z polem \verb nazwa_stacji  z pliku CSV oraz nadać jej numer ID.
 \end{itemize}
 
-\subsection{Uruchomienie bazy}
-cosikowo
+\subsection{Pierwsze uruchomienie bazy}
+Skonfigurowana baza danych wymaga jedynie uruchomienia środowiska, w którym będzie działać aplikacja internetowa. 
+W tym celu (przy założeniu, że wszystkie zależności zostały wcześniej zainstalowane) należy stworzyć środowisko:
+\begin{verbatim}
+	virtualenv --no-site-packages env
+	source env/bin/activate
+	pip2 install -r requirements.txt --allow-external mysql-connector-python pandas scipy statsmodels django-pandas django-model-utils
+\end{verbatim}
+Aby uruchomić teraz bazę danych wystarczy:
+\begin{verbatim}
+	python2 manage.py runserver
+\end{verbatim}
+I następnie podany w konsoli adres strony skopiować i wkleić w przeglądarce internetowej (domyślnie: \verb http://127.0.0.1:8000/ ).
+
+\subsection{Kolejne uruchomienie bazy}
+Przy każdym kolejnym uruchomieniu bazy wystarczy ponownie uruchomić środowisko i serwer:
+\begin{verbatim}
+	source env/bin/activate
+	python2 manage.py runserver
+\end{verbatim}
+oraz znowu skopiować adres i wkleić go do przeglądarki internetowej. 

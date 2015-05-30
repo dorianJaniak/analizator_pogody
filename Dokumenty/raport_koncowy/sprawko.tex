@@ -85,18 +85,38 @@ Stworzony przez nas analizator realizuje poniżej wymienione funkcje:
 	\item \textbf{Prognoza} - w programie został zaimplementowany algorytm prognozowania. Został on oparty na modelu \textbf{ARMA}. Algorytm nie jest jednak czystym prognozowaniem ARMA, został on zmodyfikowany. W naszej implementacji opiera się on również na interpolacji oraz wyznaczaniu wzmocnień.
 \end{itemize}
 \section{Opis tabel}
-W raporcie opisujemy jedynie te tabele, które zostały utworzone bezpośrednio przez nas, ponieważ baza danych zawiera dodatkowo tabele, które tworzone są przez Django w momencie inicjalizacji projektu. Poniższa tabela zawiera pełne zestawienie pól stworzonych tabel.
 \input{opis_tabel}
 
-
 \section{Użytkownicy}
-cosikowo
+\input{uzytkownicy}
+
 \section{Sprawozdanie z implementacji i dokumentacji}
-cosikowo
+Projekt był realizowany w zespole 3 osobowym. Aby zapewnić dobry poziom komunikacji między członkami zespołu organizowane były 3 spotkania, w trakcie których omówione zostały kolejno:
+\begin{itemize}
+	\item Założenia odnośnie tego czym ma być i jakie funkcje ma realizować aplikaca bazo-danowa.
+	\item Założenia odnośnie organizacji bazy danych (powiązania między tabelami oraz wybór pakietu django).
+	\item Podsumowanie osiągniętych wyników.
+\end{itemize}
+Poza tym zespół kontaktował się ze sobą na portalu facebook.com na bierząco informując pozostałych członków nt. postępów. Kod został uwspólniony przy użyciu serwisu github.com. 
+\newline
+Najpierw powstała testowa baza danych, która była wymagana do uruchomienia projektu. Logika została zrealizowana na bazie przykładów dostępnych w internecie. Następnie część logiczna (python i django) została połączona z bazą danych MySQL (odpowiednie modyfikacje pliku settings.py). Aby móc zobaczyć wyniki - działającą stronę należało utworzyć dodatkowo plik analyzer\_main.html oraz w plikach urls.py i views.py powiązać go. W ten sposób udało się uruchomić pierwszy projekt z Django.
+\newline
+Dostarczając raport nr 1 skorzystaliśmy z gotowej aplikacji, która na podstawie istniejącej już bazy danych generuje diagram tabel. 
+Następnie, aby zintegrować bazę danych z logiką i móc korzystać z zawartości bazy wyedytowaliśmy plik models.py, w którym stworzone zostały odpowiednie klasy (modele - odpowiednik tabeli) i dodane do nich odpowiednie pola (poszczególne kolumny tabeli). Obiekt takiej klasy odpowiada jednemu wierszowi tabeli. 
+\newline
+Prace programistyczne były przeplecione analizą algorytmu ARMA. Po znalezieniu odpowiednich przykładów, wykorzystujących pakiet statsmodels, rozpoczęliśmy w wydzielonym od projektu katalogu testy i próbę stworzenia prognozy pogody. Po kilku testach okazało się, że model ARMA nie był wystarczający do otrzymania sensownej prognozy, a więc postanowiliśmy zaimplementować własny algorytm oparty na modelu ARMA, interpolacji i pewnym wyliczaniu wzmocnień.
+\newline
+Po skończeniu prac nad prognozą została ona włączona do aplikacji oraz dołączono możliwość logowania użytkownika.
+\newline
+Na tym etapie zostały przedstawione wyniki w trakcie II spotkania kontrolnego. 
+W maju natomiast zostały wprowadzone poprawki w bazie danych oraz stworzony raport końcowy.
+
 \section{Interfejs}
-cosikowo
+\input{interfejs}
+
 \section{Instrukcja obsługi}
 \input{instrukcja}
+
 
 
 
