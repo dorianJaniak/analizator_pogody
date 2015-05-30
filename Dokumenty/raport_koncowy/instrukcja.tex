@@ -1,0 +1,30 @@
+\subsection{Instalacja bazy danych}
+Baza danych została wdrożona na systemie Linux (przetestowana na dystrybucjach Ubuntu oraz Mint). Aby móc ją uruchomić należy wcześniej zainstalować poniższe pakiety:
+\begin{itemize}
+	\item coś
+\end{itemize}
+
+\subsection{Przygotowanie plików wejściowych}
+Ponieważ aplikacja webowa nie pobiera sama danych pogodowych z internetu, należy je załadować z pliku. Aby móc to zrobić trzeba przygotować plik CSV zawierający komplet wymaganych informacji.
+W kolejnych wierszach pliku muszą się znaleźć kolejne pomiary. W kolejnych wierszach należy pola oddzielić przecinkami:
+	\begin{verbatim}
+		nazwa_stacji,data_RRRRMMDD,rodzaj_pomiaru,wartosc_pomiaru
+	\end{verbatim}
+W przypadku pola \verb data_RRRRMMDD  data musi zostać zapisana w postaci ciągu cyfr nieoddzielonych żadnymi separatorami. Przykładowa zawartość pliku:
+	\begin{verbatim}
+		Warszawa,20130118,TMIN,-6
+		Warszawa,20130119,TMIN,-8
+		Warszawa,20130120,TMIN,-6
+		Warszawa,20130121,TMIN,-7
+	\end{verbatim}
+
+Następnie należy ręcznie zarejestrować rodzaj pomiaru. Zostało to pozostawione stronie administracyjnej, ponieważ wiąże się to bezpośrednio z początkowym wdrażaniem bazy na serwerze. 
+W tym celu należy dodać wpisy w odpowiednich tabelach:
+\begin{itemize}
+	\item \textbf{Analyzer\_jednostka} - dodać opis słowny i ID jednostki związanej z mierzoną cechą
+	\item \textbf{Analyzer\_rodzajpomiaru} - dodać opis słowny zgodny z polem \verb rodzaj_pomiaru  z pliku CSV, nadać numer ID oraz odwołać się do klucza wpisanej przed chwilą jednostki
+	\item \textbf{Analyzer\_stacja} - dodać nazwę stacji zgodnie z polem \verb nazwa_stacji  z pliku CSV oraz nadać jej numer ID.
+\end{itemize}
+
+\subsection{Uruchomienie bazy}
+cosikowo

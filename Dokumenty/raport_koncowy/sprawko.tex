@@ -1,0 +1,103 @@
+\documentclass[a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[polish]{babel}
+\usepackage{polski}
+\usepackage{listings}
+\usepackage[T1]{fontenc}
+\usepackage[margin=0.9in]{geometry}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{lmodern}
+\usepackage{pdfpages}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{graphicx}
+\usepackage{pdfpages}
+\usepackage{multirow}
+
+\begin{document}
+
+\begin{titlepage}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
+
+\center 
+ 
+%----------------------------------------------------------------------------------------
+%	HEADING SECTIONS
+%----------------------------------------------------------------------------------------
+
+\textsc{\LARGE Politechnika Wrocławska}\\[1.0cm] % Name of your university/college
+\textsc{\Large Bazy Danych}\\[0.2cm] % Minor heading such as course title
+\textsc{\large Raport końcowy}\\[2cm]
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\HRule \\[0.4cm]
+{ \huge \bfseries Analizator danych pogodowych}\\[0.4cm] % Title of your document
+\HRule \\[3cm]
+ 
+%----------------------------------------------------------------------------------------
+%	AUTHOR SECTION
+%----------------------------------------------------------------------------------------
+
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Autorzy:}\\
+Aleksandra \textsc{Grzelak}\newline
+Dorian \textsc{Janiak}\newline
+Marcin \textsc{Ochman}
+
+\end{flushleft}
+\end{minipage}
+~
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Prowadzący:} \\
+dr hab. inż. Grzegorz \textsc{Mzyk}
+\end{flushright}
+\end{minipage}\\[12cm]
+
+{\large \today}\\[3cm] 
+
+
+\vfill 
+
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\listoffigures
+\newpage
+
+\section{Opis projektu}
+W ramach projektu powstała baza danych zawierająca dane pomiarowe ze stacji pogodowych oraz interfejs graficzny w postaci strony internetowej. Do zrealizowania zadania posłużył serwer \textbf{MySQL} (przetrzymywanie oraz udostępnianie danych), język \textbf{Python} (logika aplikacji) wraz z modułem \textbf{Django} (framework web - strona graficzna oraz zarządzająca bazą). 
+\section{Opis funkcjonalności}
+Stworzony przez nas analizator realizuje poniżej wymienione funkcje:
+\begin{itemize}
+	\item \textbf{Wczytywanie danych pogodowych z plików CSV} - plik ma określony format (opisany w punkcie: 7.2). Funkcja uaktywnia się jedynie dla zalogowanych użytkowników aplikacji. Dostępna jest z poziomu panelu sterowania położonego w górnej części strony ("Wczytaj dane"). Wczytuje dane z pliku jednocześnie wpisując je do tabeli \verb Analyzer_danepomiarowe . 
+	\item \textbf{Logowanie użytkownika} - logowanie odbywa się z poziomu górnego panelu sterowania ("zaloguj się"). Dane użytkownika domyślnie zapisane są w tabeli \verb auth_user . Jeśli wpisane hasło lub login nie pokryją się z zawartością bazy zostanie wyświetlony monit o niepoprawnym logowaniu. W przeciwnym wypadku logowanie przebiegnie pomyślnie i użytkownik otrzyma dostęp do funkcji wczytywania danych pogodowych. Została zaimplementowana również możliwość wylogowania użytkownika.
+	\item \textbf{Rysowanie wykresów} - wykresy rysowane są gdy użytkownik wybierze jedną z opcji związaną z podglądem danych pogodowych. Do rysowania wykorzystywany jest pakiet \textbf{matplotlib}. Dzięki wykorzystaniu tej biblioteki stworzenie wykresu na stronie jest bardzo podobne do generowania wykresów w pakiecie Matlab.
+	\item \textbf{Wybór stacji i rodzaju danych pomiarowych} - użytkownik wybiera stację oraz parametr, którego wykres chce wyświetlić. W programie po uruchomieniu funkcji reagującej na naciśnięcie odpowiedniego przycisku zostaje stworzony obiekt klasy Algorithm, który zawiera zestaw danych dla wybranej stacji oraz rodzaju pomiaru. 
+	\item \textbf{Usuwanie danych pomiarowych} - jeśli użytkownik jest zalogowany ma możliwość z poziomu zakładki "podgląd stacji pogodowych" usunąć dane. 
+	\item \textbf{Prognoza} - w programie został zaimplementowany algorytm prognozowania. Został on oparty na modelu \textbf{ARMA}. Algorytm nie jest jednak czystym prognozowaniem ARMA, został on zmodyfikowany. W naszej implementacji opiera się on również na interpolacji oraz wyznaczaniu wzmocnień.
+\end{itemize}
+\section{Opis tabel}
+W raporcie opisujemy jedynie te tabele, które zostały utworzone bezpośrednio przez nas, ponieważ baza danych zawiera dodatkowo tabele, które tworzone są przez Django w momencie inicjalizacji projektu. Poniższa tabela zawiera pełne zestawienie pól stworzonych tabel.
+\input{opis_tabel}
+
+
+\section{Użytkownicy}
+cosikowo
+\section{Sprawozdanie z implementacji i dokumentacji}
+cosikowo
+\section{Interfejs}
+cosikowo
+\section{Instrukcja obsługi}
+\input{instrukcja}
+
+
+
+\end{document}
