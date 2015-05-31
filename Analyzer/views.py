@@ -156,42 +156,17 @@ class DanePomiaroweDeleteView(LoginRequiredMixin,TemplateView):
 
     def get_context_data(self, **kwargs):
         self.station_id = kwargs['station_id']
-        #rodzaj_pom_id=kwargs['rodzaj_pom_id']
         context = super(DanePomiaroweDeleteView, self).get_context_data(**kwargs)
         stacja = get_object_or_404(Stacja, id=self.station_id)
 
-        #DanePomiarowe.objects.filter(stacja__id=self.station_id).delete()
         context['station'] = stacja
-
-        #context['rodzaj_pom'] = get_object_or_404(RodzajPomiaru, id=rodzaj_pom_id)
-
         return context
 
     def post(self, request, *args, **kwargs):
         self.station_id = kwargs['station_id']
         stacja = get_object_or_404(Stacja, id=self.station_id)
         DanePomiarowe.objects.filter(stacja__id=self.station_id).delete()
-        #return render(request,self.template_name)
         return redirect(self.success_url)
-
-
-
-    # def get_queryset(self):
-    #     qs=super(DanePomiaroweDeleteView,self).get_queryset()
-    #     return  qs.filter(stacja__id=self.station_id)
-
-    # def get_object(self, queryset=None):
-    #     obj = DanePomiarowe.objects.filter(stacja__id=self.station_id)
-    #     return obj
-    #
-    # def my_delete(self):
-    #      DanePomiarowe.objects.filter(stacja__id=station_id).delete()
-
-
-
-    # def get_queryset(self):
-    #     qs = super(DanePomiaroweDeleteView, self).get_queryset()
-    #     return qs.filter()
 
 
 class LoadDataView(LoginRequiredMixin,FormView):
@@ -242,61 +217,7 @@ def dataview(request, *args, **kwargs):
     for i in range(1,15):
         dates_list.append((last_date + i*delta_time).strftime("%Y-%m-%d"))
     
-    #print(alg.preds)
-    
     data_to_send = list(zip(dates_list,alg.preds[-14:]));
     data_to_send.insert(0,["Data", str(rodzaj_pomiaru_q)])
-    
-    #print(dates_list)
-#     fig=Figure()
-#     ax=fig.add_subplot(111)
-    #ax.plot(alg.dta)
-#     ax.plot(alg.x_prediction,alg.preds)
-#     ax.plot(alg.dta)
-#     canvas=FigureCanvas(fig)
-    #response=HttpResponse(content_type='image/png')
-#     canvas.print_png(response)
-    #return response
     return JsonResponse(data_to_send, safe=False)
     
-
-def data_station_view(request, *args, **kwargs ):
-    stacja=kwargs['station_id']
-    rodzaj_pom=kwargs['rodzaj_pom_id']
-    alg = Algorithm(dlugosc_prognozy=14, stacja_id=stacja, rodzaj_pomiaru=rodzaj_pom)
-
-    fig=Figure()
-    ax=fig.add_subplot(111)
-    ax.plot(alg.dta)
-    canvas=FigureCanvas(fig)
-    response=HttpResponse(content_type='image/png')
-    canvas.print_png(response)
-    return response
-    # alg = Algorithm(dlugosc_prognozy=14)
-    # fig =  plt.figure(1,figsize=(12,8))
-    # plt.plot(alg.dta)
-    # canvas=FigureCanvas(fig)
-    # response=HttpResponse(content_type='image/png')
-    # canvas.print_png(response)
-    # plt.close(fig)
-    # return response
-
-    #
-
-
-    # alg = Algorithm(dlugosc_prognozy=14)
-    # alg.mainAlg()
-    #
-    # fig, ax = plt.subplots(figsize=(12, 8))
-    # plt.plot(alg.x_prediction,alg.preds)
-    # plt.plot(alg.dta)
-    #
-    # #fig = Figure()
-    # #ax1 = fig.add_subplot(211)
-    # #ax2 = fig.add_subplot(212)
-    #
-    # canvas=FigureCanvas(fig)
-    # response=HttpResponse(content_type='image/png')
-    # canvas.print_png(response)
-    # plt.close(fig)
-    # return response
