@@ -84,20 +84,12 @@ class Algorithm:
     def __init__(self, dlugosc_prognozy, stacja_id, rodzaj_pomiaru):
         self.ileDniPrognoza = dlugosc_prognozy
         stacja_q=get_object_or_404(Stacja,id=stacja_id)
-        rodzaj_pomiaru_q=get_object_or_404(RodzajPomiaru,id=rodzaj_pomiaru
-                                           )
+        rodzaj_pomiaru_q=get_object_or_404(RodzajPomiaru,id=rodzaj_pomiaru)
         qs = DanePomiarowe.objects.filter(stacja=stacja_q, rodzaj_pomiaru=rodzaj_pomiaru_q)
         self.dta=qs.to_dataframe(
             fieldnames=['data','wartosc'],
             index='data'
         )
-        # self.dta=qs.to_timeseries(
-        #     fieldnames=['data','wartosc'],
-        #     index='data',
-        #     #pivot_columns='wartosc',
-        #     values='wartosc',
-        #     storage='wide'
-        # )
         print(self.dta)
         print(len(self.dta))
 
@@ -113,18 +105,6 @@ class Algorithm:
         lags = np.arange(nLags+1)
         acf_confint = acf_confint - acf_confint.mean(1)[:,None]
         pacf_confint = pacf_confint - pacf_confint.mean(1)[:,None]
-
-        #fig = plt.figure(figsize=(12,8))
-        #ax1 = fig.add_subplot(211)
-        #ax2 = fig.add_subplot(212)
-
-        #ax1.plot(lags,acf_acf)
-        #ax1.fill_between(lags,acf_confint[:,0], acf_confint[:,1], alpha=.25)
-        #ax1.set_title("ACF")
-        #ax2.plot(lags,pacf_pacf)
-        #ax2.fill_between(lags,pacf_confint[:,0], pacf_confint[:,1], alpha=.25)
-        #ax2.set_title("PACF")
-
         acf_peaks = abs(acf_acf) - abs(acf_confint[:,0])
         pacf_peaks = abs(pacf_pacf) - abs(pacf_confint[:,0])
 
@@ -135,8 +115,7 @@ class Algorithm:
             p = p+1
         while q < len(lags) and acf_peaks[q] > 0:
             q = q+1
-        #print("WYBRANE PARAMETRY P i Q:",p,q)
-        #plt.show()
+        
         return p,q
 
     def minimalizujPiQ(self,p,q):

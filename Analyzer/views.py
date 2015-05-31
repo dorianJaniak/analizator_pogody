@@ -7,7 +7,7 @@ from Analyzer.forms import LoginForm, LoadFilenameForm
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic import TemplateView, FormView, CreateView,\
     UpdateView, DeleteView
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.dates import DateFormatter
@@ -102,7 +102,6 @@ class StationsView(TemplateView):
         context = super(StationsView, self).get_context_data(**kwargs)
         context['station_list'] = Stacja.objects.all()
         context['rodzaj_pomiaru_list']=RodzajPomiaru.objects.all()
-
         return context
 
 class StationsDetailView(TemplateView):
@@ -123,7 +122,6 @@ class StationsDetailView(TemplateView):
 
         context['dane_pom'] = DanePomiarowe.objects.filter(stacja__id=station_id, rodzaj_pomiaru__id=rodzaj_pom_id)
         context['rodzaj_pom'] = get_object_or_404(RodzajPomiaru, id=rodzaj_pom_id)
-
         return context
 
 class ForecastFormView(TemplateView):
@@ -229,21 +227,38 @@ class LoadDataView(LoginRequiredMixin,FormView):
 
 
 # TODO
-def dataview(request, *args, **kwargs ):
+def dataview(request, *args, **kwargs):
     stacja=kwargs['station_id']
     rodzaj_pom=kwargs['rodzaj_pom_id']
     alg = Algorithm(dlugosc_prognozy=14, stacja_id=stacja, rodzaj_pomiaru=rodzaj_pom)
     alg.mainAlg()
-
-    fig=Figure()
-    ax=fig.add_subplot(111)
+    stacja_q=get_object_or_404(Stacja,id=stacja)
+    rodzaj_pomiaru_q=get_object_or_404(RodzajPomiaru,id=rodzaj_pom)
+    last_date = DanePomiarowe.objects.filter(stacja=stacja_q, rodzaj_pomiaru=rodzaj_pomiaru_q).latest("data").data
+    
+    dates_list = [];
+    delta_time = datetime.timedelta(days=1)
+    
+    for i in range(1,15):
+        dates_list.append((last_date + i*delta_time).strftime("%Y-%m-%d"))
+    
+    #print(alg.preds)
+    
+    data_to_send = list(zip(dates_list,alg.preds[-14:]));
+    data_to_send.insert(0,["Data", str(rodzaj_pomiaru_q)])
+    
+    #print(dates_list)
+#     fig=Figure()
+#     ax=fig.add_subplot(111)
     #ax.plot(alg.dta)
-    ax.plot(alg.x_prediction,alg.preds)
-    ax.plot(alg.dta)
-    canvas=FigureCanvas(fig)
-    response=HttpResponse(content_type='image/png')
-    canvas.print_png(response)
-    return response
+#     ax.plot(alg.x_prediction,alg.preds)
+#     ax.plot(alg.dta)
+#     canvas=FigureCanvas(fig)
+    #response=HttpResponse(content_type='image/png')
+#     canvas.print_png(response)
+    #return response
+    return JsonResponse(data_to_send, safe=False)
+    
 
 def data_station_view(request, *args, **kwargs ):
     stacja=kwargs['station_id']

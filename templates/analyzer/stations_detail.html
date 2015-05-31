@@ -1,6 +1,10 @@
 {% extends "analyzer/base.html"%}
-{% block title %} - stacja {% endblock %}
+{% block title %} {{ station }} - {{rodzaj_pom}} {% endblock %}
 {% block content %}
+
+<h1>{{ station }} - {{rodzaj_pom}} </h1>
+
+{% if user.is_authenticated %}
 
  <script type="text/javascript"
           src="https://www.google.com/jsapi?autoload={
@@ -25,6 +29,13 @@
           	title: '',
           	curveType: 'function',
           	legend: { position: 'bottom' },
+          	vAxis: { format: '#,##' },
+    		animation:{
+        			duration: 2000,
+        			easing: 'out',
+        			startup: true
+      			},
+    			
         	};
 
         	var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
@@ -33,45 +44,13 @@
         }
       }
     </script>
-
-
-<div id="Index">
-<h1>Stacja - {{ station }} </h1>
-
-    <!--{% if dane_pom %}-->
-
-    <!--<table class="table">-->
-        <!--<thead>-->
-        <!--<tr>-->
-            <!--<th class="col-lg-1">Rodzaj pomiaru</th>-->
-            <!--<th class="col-lg-1">Wartość</th>-->
-            <!--<th class="col-lg-1">Data</th>-->
-        <!--</tr>-->
-        <!--</thead>-->
-        <!--<tbody>-->
-        <!--{% for dana in dane_pom %}-->
-      <!--<tr>-->
-          <!--<td> {{ dana.rodzaj_pomiaru }} </td>-->
-          <!--<td> {{ dana.wartosc }} {{ dana.rodzaj_pomiaru.jednostka }}</td>-->
-          <!--<td> {{ dana.data|date:"d.m.Y"}}, {{ dana.data|time:"H:i" }}</td>-->
-          <!--</tr>-->
-        <!--{% endfor %}-->
-           <!--</tbody>-->
-        <!--</table>-->
-    <p>
-        <div id="curve_chart"></div>
-    <p>
-      <!-- <img src="{% url 'image_current' station.id rodzaj_pom.id %}" />-->
-    </p>
-
+    {% if dane_pom %}
+       <div id="curve_chart"></div>
     {% else %}
-    <p> Brak danych do wyświetlenia.</p>
+    	<p> Brak danych do wyświetlenia.</p>
     {% endif %}
 
-
-
-
-
-</div>
-
+{% else %}
+	<p> Aby pokazać dane historyczne stacji należy najpierw się zalogować. </p>
+{% endif %}
     {% endblock %}

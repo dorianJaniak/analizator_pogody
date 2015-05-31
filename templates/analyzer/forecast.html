@@ -2,17 +2,55 @@
 {% block title %} - prognoza {% endblock %}
 {% block content %}
 
-<div id="Index">
 <h1>Prognoza</h1>
 
-    <p></p>
-    <p>
-                <img src="{% url 'image_forecast' station.id rodzaj_pom.id %}" />
+{% if user.is_authenticated %}
 
-    </p>
+<script type="text/javascript"
+          src="https://www.google.com/jsapi?autoload={
+            'modules':[{
+              'name':'visualization',
+              'version':'1',
+              'packages':['corechart']
+            }]
+          }"></script>
+	<script src="https://raw.githubusercontent.com/heartcode/CanvasLoader/master/js/heartcode-canvasloader-min.js"></script>
 
+    <script type="text/javascript">
+      google.setOnLoadCallback(init);
+      function init() 
+      {
+      	var cl = new CanvasLoader('loader');
+		cl.setColor('#002070'); // default is '#000000'
+		cl.setShape('spiral'); // default is 'oval'
+		cl.setDiameter(183); // default is 40
+		cl.setDensity(151); // default is 40
+		cl.setRange(0.7); // default is 1.3
+		cl.setSpeed(5); // default is 2
+		cl.setFPS(24); // default is 24
+  		cl.show();
 
+     	$.get('forecast.json',{},function(dane)
+     	{
+    		var data = google.visualization.arrayToDataTable(dane)
+        	var options = {
+          	title: '',
+          	curveType: 'function',
+          	vAxis: { format: '#,##' },
+          	legend: { position: 'bottom' },
+        	};
+        	var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        	$("canvasloader-container").hide()
+        	chart.draw(data, options);
+     	});
+       }
+    </script>
 
-</div>
+<div id="curve_chart"/>
+<div id="loader"/>
 
-    {% endblock %}
+{% else %}
+	<p> Aby pokazać prognozę pogody dla podanej stacji należy najpierw się zalogować. </p>
+{% endif %}
+
+{% endblock %}
