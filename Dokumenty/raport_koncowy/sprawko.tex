@@ -77,13 +77,17 @@ W ramach projektu powstała baza danych zawierająca dane pomiarowe ze stacji po
 \section{Opis funkcjonalności}
 Stworzony przez nas analizator realizuje poniżej wymienione funkcje:
 \begin{itemize}
-	\item \textbf{Wczytywanie danych pogodowych z plików CSV} - plik ma określony format (opisany w punkcie: 7.2). Funkcja uaktywnia się jedynie dla zalogowanych użytkowników aplikacji. Dostępna jest z poziomu panelu sterowania położonego w górnej części strony (''Wczytaj dane''). Wczytuje dane z pliku jednocześnie wpisując je do tabeli \verb Analyzer_danepomiarowe . 
+	\item \textbf{Wczytywanie danych pogodowych z plików CSV} - plik ma określony format (opisany w punkcie: 8.2). Funkcja uaktywnia się jedynie dla zalogowanych użytkowników aplikacji. Dostępna jest z poziomu panelu sterowania położonego w górnej części strony (''Wczytaj dane''). Wczytuje dane z pliku jednocześnie wpisując je do tabeli \verb Analyzer_danepomiarowe . 
 	\item \textbf{Logowanie użytkownika} - logowanie odbywa się z poziomu górnego panelu sterowania (''zaloguj się''). Dane użytkownika domyślnie zapisane są w tabeli \verb auth_user . Jeśli wpisane hasło lub login nie pokryją się z zawartością bazy zostanie wyświetlony monit o niepoprawnym logowaniu. W przeciwnym wypadku logowanie przebiegnie pomyślnie i użytkownik otrzyma dostęp do funkcji wczytywania danych pogodowych. Została zaimplementowana również możliwość wylogowania użytkownika.
-	\item \textbf{Rysowanie wykresów} - wykresy rysowane są gdy użytkownik wybierze jedną z opcji związaną z podglądem danych pogodowych. Do rysowania wykorzystywany jest pakiet \textbf{matplotlib}. Dzięki wykorzystaniu tej biblioteki stworzenie wykresu na stronie jest bardzo podobne do generowania wykresów w pakiecie Matlab.
+	\item \textbf{Rysowanie wykresów} - wykresy rysowane są gdy użytkownik wybierze jedną z opcji związaną z podglądem danych pogodowych. Do rysowania wykorzystywany był przez nas wczesniej pakiet matplotlib. Ze względu na lepszą prezentację danych wybraliśmy jednak pakiet od google \textbf{google.visualization}, z którego można korzystać w wywołaniach \textbf{Java Script}.
 	\item \textbf{Wybór stacji i rodzaju danych pomiarowych} - użytkownik wybiera stację oraz parametr, którego wykres chce wyświetlić. W programie po uruchomieniu funkcji reagującej na naciśnięcie odpowiedniego przycisku zostaje stworzony obiekt klasy Algorithm, który zawiera zestaw danych dla wybranej stacji oraz rodzaju pomiaru. 
 	\item \textbf{Usuwanie danych pomiarowych} - jeśli użytkownik jest zalogowany ma możliwość z poziomu zakładki ''podgląd stacji pogodowych'' usunąć dane. 
 	\item \textbf{Prognoza} - w programie został zaimplementowany algorytm prognozowania. Został on oparty na modelu \textbf{ARMA}. Algorytm nie jest jednak czystym prognozowaniem ARMA, został on zmodyfikowany. W naszej implementacji opiera się on również na interpolacji oraz wyznaczaniu wzmocnień.
 \end{itemize}
+
+\section{Struktura aplikacji WEB}
+\input{organizacja}
+
 \section{Tabele}
 \input{opis_tabel}
 

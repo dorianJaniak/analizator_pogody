@@ -1,0 +1,144 @@
+Organizacja aplikacji w dużej mierze została narzucona przez samo Django. Poniżej prezentujemy opis istotnych plików i katalogów:
+\begin{itemize}
+	\item \textbf{WheatherAnalyzer/settings.py} - plik ten tworzony jest automatycznie przez Django w trakcie inicjalizacji projektu. W tym pliku wpisane są takie informacje jak silnik bazo-danowy, z którego korzystamy, login i hasło użytkownika bazy danych (w momencie przeniesienia bazy na inny komputer należy pamiętać, że jeśli posiada się konto z hasłem do dostępu do bazy danych, należy uzupełnić pola USER oraz PASSWORD. Istotnymi informacjami są również pakiety django, z których korzysta aplikacja.
+	\item \textbf{WheatherAnalyzer/urls.py} - plik ten zawiera informacje na temat linków (stron) jakie pojawią się w bazie. Przykładowo:
+	\begin{verbatim}
+		url(r'^station/(?P<station_id>[0-9]+)/(?P<rodzaj_pom_id>[0-9]+)$',
+ 	StationsDetailView.as_view(), name="station_detail"),
+	\end{verbatim}
+Tworzy nowy link, który jest dopasowywany przy użyciu regex i przekierowuje działanie Django do klasy StationsDetailView z pliku view.py. Wartość parametru name posłuży do odwołań z szablonu html. 
+	\item \textbf{Analyzer/admin.py} - plik rejestruje modele z pliku models.py. Plik jest wykorzystywany przez panel administracyjny Django. Modele zarejestrowane w tym pliku będą widziane w panelu i będzie można nimi zarządzać.
+	\item \textbf{Analyzer/models.py} - plik zawiera modele, które między innymi pozwalają uzyskać dane z tabel baz danych. Modelami są zwykłe klasy, które korzystają z pakietu \textit{django.db}, zarządzającego bazami danych, w celu wyciągania danych z poszczególnych rekordów. Przykładowy kod takiej klasy zaprezentowany został poniżej:
+	\begin{verbatim}
+	class Stacja(models.Model):
+    # id = models.AutoField(primary_key=True)
+    nazwa = models.CharField(max_length=30)
+
+    def __unicode__(self):
+        return self.nazwa
+	\end{verbatim}
+pole \textit{name} od tej pory będzie przechowywać nazwę stacji zapisaną przy użyciu typu VARCHAR(30). Stworzenie obiektu takiej klasy owocuje pobraniem rekordu z tabeli Analyzer\_stacje.
+	\item \textbf{Analyzer/forms.py} - plik jest wykorzystywany do tworzenia formularzy (np. formularz logowania). Klasy przechowujące formularze muszą odziedziczyć po jednej z klas django.forms lub crispy\_forms. Aby móc użyć formularza z poziomu szablonów należy dla niego najpierw stworzyć link w pliku urls.py i uzupełnić parametr name. 
+	\item \textbf{Analyzer/views.py} - plik przechowuje klasy, które służą do rysowania widoku. W każdej z klas należy powiązać klasę z szablonem oraz zaimplementować metody, które zwrócą kontekst w postaci mapy lub same zażądają wyrenderowania widoku funkcją render(). W funkcjach tych korzysta się z modeli zaimplementowanych w pliku models.py, aby pobrać dane i przekazać do django. 
+	\item \textbf{templates/analyzer/} - folder zawiera zbiór plików w formacie HTML, które są szablonami stron. Aby sięgnąć po dane z bazy danych lub formularze należy w ich kodzie wywołać odpowiednie funkcje (które były już wcześniej powiązane), przykładowo:
+	\begin{verbatim}
+	 {% if dane_pom %}
+       <div id="curve_chart"></div>
+    {% else %}
+    	<p> Brak danych do wyświetlenia.</p>
+    {% endif %}
+	\end{verbatim}
+powyższy kod sprawdzi czy istnieją elementy dane\_pom, jeśli tak to wyświetli wykres stworzony w javascript przy użyciu biblioteki google.visualizations. W przeciwnym wypaku wyświetli się napis "Brak danych ...". 
+\end{itemize}
+
+\subsection{Modele}
+Poniżej znajdują się deklaracje poszczególnych klas oraz krótkie opisy do nich:
+\begin{itemize}
+	\item \textbf{class Stacja(models.Model)} \newline
+	model pobiera dane z bazy \textit{Analyzer\_stacje}.
+	Klasa posiada tylko jedno pole \textit{nazwa}, które odpowiada nazwie stacji.
+	\item \textbf{class Jednostka(models.Model)} \newline
+	model pobiera dane z bazy \textit{Analyzer\_jednostka}.
+	Klasa posiada tylko jedno pole \textit{nazwa}, które odpowiada nazwie jednostki.
+	\item \textbf{class RodzajPomiaru(models.Model)} \newline
+	model pobiera dane z bazy \textit{Analyzer\_rodzajpomiaru}.
+	Klasa posiada dwa pola: \textit{nazwa}, które odpowiada nazwie rodzaju pomiaru oraz \textit{jednostka}, które przechowuje klucz obcy z tabeli jednostek. 
+	\item \textbf{class DanePomiarowe(models.Model)} \newline
+	model pobiera dane z bazy \textit{Analyzer\_danepomiarowe}.
+	Klasa posiada pola: \textit{wartosc}, która jest reprezentowana przez typ całkowity, \textit{rodzaj\_pomiaru} oraz \textit{stacja}, które są kluczami obcymi, \textit{data} reprezentowana w formacie datetime.datetime.
+\end{itemize}
+
+\subsubsection{Klasa Algorithm}
+Klasa posiada więcej niż jedną funkcję i nie realizuje tylko funkcji uzyskiwania dostępu do rekordu tabeli. 
+Poniżej opisane zostały funkcje, które zostały zaimplementowane w klasie:
+\begin{itemize}
+	\item \textbf{\_\_init\_\_(self, dlugosc\_prognozy, stacja\_id, rodzaj\_pomiaru)}
+	\begin{itemize}
+		\item self - standardowy argument w języku Python pozwalający na korzystanie z pól i funkcji klasy
+		\item dlugosc\_prognozy - ile dni ma byc prognozowane w formacie całkowitej liczby
+		\item stacja\_id - numer id, który posłuży do pobrania obiektu reprezentującego rekord stacji
+		\item rodzaj\_pomiaru - numer id, który posłuży do pobrania obiektu reprezentującego rekord rodzaju pomiaru
+	\end{itemize}
+	Konstruktor pobiera dane z bazy danych przy użyciu obiektu klasy \textit{DanePomiarowe} oraz funkcji filter. Następnie przygotowuje zestawienie dat i wartości pomiarów w strukturze dta, która jest wykorzystywana przez kolejne funkcje. 
+
+	\item \textbf{wyznaczPiQ(self,dane)}
+	\begin{itemize}
+		\item dane - same wartości pomiarów
+	\end{itemize}
+	Funkcja wyznacza parametry P (na podstawie PACF) oraz Q (na podstawie ACF). 
+
+	\item \textbf{minimalizujPiQ(self,p,q)}
+	\begin{itemize}
+		\item p - parametr P w postaci liczby całkowitej
+		\item q - parametr Q w postaci liczby całkowitej
+	\end{itemize}
+	Funkcja ogranicza parametry P i Q do wartości maksymalnej 20 jeśli przekraczają tę granicę. Stara się zachować proporcje między parametrami. 
+
+	\item \textbf{artistico\_usrednijWykres(self, dane,rzad,ileNowych)}
+	\begin{itemize}
+		\item dane - pełne dane z datami oraz wartościami
+		\item rzad - rząd interpolacji
+		\item ileNowych - liczba wskazująca na ile dni ma zostać stworzona predykcja
+	\end{itemize}
+	Funkcja interpoluje oryginalne dane w zakresie od pierwszej dostępnej daty do ostatniej + ileNowych
+
+	\item \textbf{artistico\_odejmijTrend(self,daneOryg,trend)}
+	\begin{itemize}
+		\item daneOryg - pełne dane z datami oraz wartościami 
+		\item trend - wartości, które mają zostać odjęte
+	\end{itemize}
+	Funkcja zwraca tablicę różnic danych oryginalnych z danymi uśrednionymi
+
+	\item \textbf{artistico\_obliczWzmocnienie(self,dane,predykcja,trend,ileBracPodUwage)}
+	\begin{itemize}
+		\item dane - pełne dane z datami oraz wartościami
+		\item predykcja - wartości prognozowane otrzymane w wyniku dopasowania modelu ARMA
+		\item trend - uśrednione wartości oryginalnych danych
+		\item ileBracPodUwage - liczba całkowita informująca ile ostatnich pomiarów ma zostać uwzględnione przy obliczaniu wzmocnień
+	\end{itemize}
+	Funkcja wyznacza minimalne i maksymalne wartości dla zakresu \textit{ileBracPodUwage} pomiarów predykcji oraz oryginalnych danych. Następnie wylicza między nimi wzmocnienie i przemnażając uzyskane wartości predykcji otrzymuje odpowiednio przeskalowane wartości predykcji. 
+
+	\item \textbf{mainAlg(self)}\newline
+	W funkcji znajduje się główna część algorytmu predykcji. Najpierw wyznacza wartości interpolowane oryginalnych danych (z względnie małym rzędem). Następnie odejmuje te wartości od oryginalnych danych. Na podstawie oryginalnych danych, współczynników AIC oraz wyznaczonych maksymalnych parametrów P i Q na podstawie funkcji autokorelacji, wyznacza model ARMA. Następnie, aby pozbyć się dużych wahań temperatury wylicza wzmocnienia na bazie oryginalnych danych i wahań uzyskanych wcześniej. Rezultaty pozostawia w tablicach x\_prediction oraz preds.
+\end{itemize}
+\subsection{Formularze}
+Zawartość formularzy definiowana jest w ich konstruktorach. Nasza aplikacja posiada dwa formularze: 
+\begin{itemize}
+	\item \textbf{LoginForm(AuthenticationForm)}\newline
+	Formularz dziedziczy po szablonie AuthenticationForm z pakietu django.contrib.auth.forms, ale korzysta z elementów formularza FormHelper dostępnego w pakiecie crispy\_forms. W formularzu zdefiniowane zostały pola ''username'', ''password'' oraz przycisk ''Zaloguj'' (korzysta z klasy Submit).
+	\item \textbf{LoadFilenameForm(forms.Form)}\newline
+	Formularz dziedziczy po szablonie Form dostępnym w pakiecie django.forms. W formularzu zdefiniowane zostało pole ''file'' oraz przycisk ''Wczytaj'' (korzysta z klasy Submit). 
+\end{itemize}
+
+\subsection{Widoki}
+Obsługa widoków może się opierać zarówno na Klasach jak i funkcjach. Poniżej zostały one opisane:
+\begin{itemize}
+	\item \textbf{IndexView(TemplateView)}\newline
+	Klasa jedynie rejestruje szablon, reprezentujący stronę główną.
+	\item \textbf{LoginView(FormView)}\newline
+	Klasa rejestruje szablon, reprezentujący stronę logowania (''analyzer/login.html''). 
+	\item \textbf{LogoutView(TemplateView)}\newline
+	Klasa rejestruje szablon, reprezentujący stronę wylogowania (''analyzer/logout.html''). 
+	\item \textbf{StationsView(TemplateView)}\newline
+	Klasa rejestruje szablon, reprezentujący stronę listy stacji (''analyzer/stations.html''). 
+	\item \textbf{StationsDetailView(TemplateView)}\newline
+	Klasa rejestruje szablon, reprezentujący stronę podglądu danych pogodowych (''analyzer/stations\_detail.html''). 
+	Funkcja get\_context\_data pobiera stację przekazaną w argumentach funkcji, a następnie pobiera pomiary, które zwraca jako mapę w zmiennej context. 
+	\item \textbf{ForecastFormView(TemplateView)}\newline
+	Klasa rejestruje szablon, reprezentujący stronę listy prognoz (''analyzer/forecast\_form.html''). 
+	Pobiera listę stacji oraz rodzajów pomiarów i przekazuję jako słownik w zmiennej context. 
+	\item \textbf{ForecastView(TemplateView)}\newline
+	Klasa rejestruje szablon, reprezentujący stronę podglądu prognozy (''analyzer/forecast.html''). 
+	Funkcja get\_context\_data przygotowuje mapę zawierającą obiekty reprezentujące stację oraz rodzaj pomiaru.
+	\item \textbf{AuthorsView(TemplateView)}\newline
+	Klasa rejestruje szablon, reprezentujący stronę autorów (''analyzer/authors.html''). 
+	\item \textbf{PermissionRequiredMixin(object)}\newline
+	Klasa służy do zadecydowania czy użytkownik ma prawo do otwarcia strony. Jeśli nie ma zostanie wyświetlona strona z kodem błędu 403, w przeciwnym wypadku otrzyma dostęp (wywołanie funkcji dispatch() ).
+	\item \textbf{DanePomiaroweDeleteView(LoginRequiredMixin,TemplateView)}\newline
+	Klasa rejestruje szablon, reprezentujący stronę usuwania danych pomiarowych (''analyzer/delete.html'').
+	Najpierw klasa przygotowuje obiekt reprezentujący wybraną stację, a w wypadku potwierdzenia chęci usunięcia danych zostają wykasowane dane dotyczące wybranej stacji z bazy danych w funkcji ''post''.
+	\item \textbf{LoadDataView(LoginRequiredMixin,FormView)}\newline
+	Klasa rejestruje szablon, reprezentujący stronę usuwania danych pomiarowych (''analyzer/load\_data.html'').
+	W funkcji get ustawia odpowiedni formularz i żąda jego wyrenderowania, natomiast w funkcji post ładuje z pliku wskazanego przez użytkownika dane do listy.
+
+\end{itemize}
