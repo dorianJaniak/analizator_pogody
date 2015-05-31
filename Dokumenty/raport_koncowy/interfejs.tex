@@ -24,4 +24,40 @@ Wykresy rysowane są przy użyciu biblioteki matplotlib (Rysunek \ref{fig:wykres
 	\caption{Wyrysowany wykres}
 	\label{fig:wykres}
 	\end{figure}
-
+\subsection{Panel administracyjny}
+Django automatycznie dostarcza panel administracyjny, który pozwala na wygodne zarządzanie danymi w bazie danych. Aby się do niego dostać należy z poziomu przeglądarki internetowej wejść na stronę internetową:
+\begin{verbatim}
+	http://127.0.0.1:8000/admin/
+\end{verbatim}
+oczywiście przy założeniu, że środowisko zostało już uruchomione. Następnie należy się zalogować. Po zalogowaniu ukaże się okno (Rysunek \ref{fig:panelAdmin}).
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=\linewidth]{003}
+	\caption{Panel administracyjny}
+	\label{fig:panelAdmin}
+	\end{figure}
+\newline
+W oknie tym można zarządzać tabelami oraz grupami użytkowników. 
+W przypadku zarządzania użytkownikami można tworzyć, usuwać i zmieniać im uprawnienia. Przykładowo na rysunku \ref{fig:panelUzytkownicy} widać, że utworzony został nowy użytkownik o nazwie buka, ale nie otrzymał on prawa logowania się do panelu administracyjnego (nie została zaznaczona opcja \textit{staff status}). 
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=\linewidth]{005}
+	\caption{Panel Django - zmiana ustawień użytkownika}
+	\label{fig:panelUzytkownicy}
+	\end{figure}
+\newline
+Dodatkowo panel administracyjny pozwala na pełny dostęp do zawartości bazy - także można nawet usuwać lub dodawać pojedyncze rekordy. Na rysunku \ref{fig:panelPomiary} można zobaczyć fragment zestawienia zawartości tabeli \verb Analyzer_danepomiarowe . 
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=\linewidth]{006}
+	\caption{Panel Django - podgląd zawartości tabeli Analyzer\_danepomiarowe }
+	\label{fig:panelPomiary}
+	\end{figure}
+\newline
+Z tego zestawienia można wybrać jeden z pomiarów oraz go wyedytować. Edycję wpisu przedstawia rysunek \ref{fig:panelPomiar}.
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=\linewidth]{007}
+	\caption{Panel Django - edycja wpisu tabeli Analyzer\_danepomiarowe }
+	\label{fig:panelPomiar}
+	\end{figure}
