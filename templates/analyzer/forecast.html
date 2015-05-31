@@ -4,8 +4,6 @@
 
 <h1>Prognoza</h1>
 
-{% if user.is_authenticated %}
-
 <script type="text/javascript"
           src="https://www.google.com/jsapi?autoload={
             'modules':[{
@@ -48,9 +46,5 @@
 
 <div id="curve_chart"/>
 <div id="loader"/>
-
-{% else %}
-	<p> Aby pokazać prognozę pogody dla podanej stacji należy najpierw się zalogować. </p>
-{% endif %}
 
 {% endblock %}

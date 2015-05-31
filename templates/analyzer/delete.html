@@ -5,12 +5,9 @@
 <div>
 	<form action="{% url 'delete_stations' station.id %}" method="post">
         {% csrf_token %}
-    <p>Are you sure you want to delete?</p>
-    <input type="submit" value="Confirm" />
+    <p>Czy jesteś pewny, że chcesz usunąć te dane?</p>
+    <input type="submit" value="Potwierdź" />
 </form>
-
-
-
 
 </div>
 

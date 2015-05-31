@@ -4,8 +4,6 @@
 
 <h1>{{ station }} - {{rodzaj_pom}} </h1>
 
-{% if user.is_authenticated %}
-
  <script type="text/javascript"
           src="https://www.google.com/jsapi?autoload={
             'modules':[{
@@ -50,7 +48,4 @@
     	<p> Brak danych do wyświetlenia.</p>
     {% endif %}
 
-{% else %}
-	<p> Aby pokazać dane historyczne stacji należy najpierw się zalogować. </p>
-{% endif %}
     {% endblock %}
